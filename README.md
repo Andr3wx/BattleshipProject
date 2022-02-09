@@ -6,3 +6,7 @@ Our team members are Russell Deady, John Ronzo, Andrew Franklin, Randy Toyberman
 Project Design:
 There are several Battleship games written in Python with some using Pygame. We will extended the current state of the art for those that use Pygame by introducing a rule change that allows players to move their ships during the game. We will also implement a multiplayer feature with socket programming that allows LAN play. 
 Libraries: Pygame, Socket, Random
+
+Multiplayer: Randy
+GUI: Russell, 
+Mechanics: John
