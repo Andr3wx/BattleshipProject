@@ -8,6 +8,6 @@ There are several Battleship games written in Python with some using the Pygame 
 
 Libraries: Pygame, Socket, Random, Pygame-ai
 
-Multiplayer: Randy
-GUI: Russell, Tyler
-Mechanics: John, Andrew
+- Multiplayer: Randy
+- GUI: Russell, Tyler
+- Mechanics: John, Andrew
