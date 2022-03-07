@@ -13,3 +13,5 @@ Libraries: Pygame, Socket, Random, Pygame-ai
 - Mechanics: John, Andrew
 
 Status Report 1: For the backend mechanics, we have finalized our descision to use Pygame for most of the functionality and well as Pygame-ai for one player games. We also progammed the initial Pygame interface which the rest of the game will be built on. We have also begun to research as much as we can about the Pygame library to get the most functionality out of it.
+
+As for the multiplayer functionality, we have setup a basic network and server which currently functions to establish a connection between clients running on the same network. In addition to this, research has been started on sending information between clients in order to send and recieve game moves and to update game data over the network.
