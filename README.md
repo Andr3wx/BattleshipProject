@@ -11,3 +11,5 @@ Libraries: Pygame, Socket, Random, Pygame-ai
 - Multiplayer: Randy
 - GUI: Russell, Tyler
 - Mechanics: John, Andrew
+
+Status Report 1: For the backend mechanics, we have finalized our descision to use Pygame for most of the functionality and well as Pygame-ai for one player games. We also progammed the initial Pygame interface which the rest of the game will be built on. We have also begun to research as much as we can about the Pygame library to get the most functionality out of it.
