@@ -85,9 +85,9 @@ def getRectCoord(cord, gridLocation):
 
 def mouseHighlight(position, gridLocation):
     # Checks to see whether mouse is over grid
-    gridLoc = checkIfGrid(pos, grid)
+    gridLoc = checkIfGrid(position, gridLocation)
     if gridLoc[0] != -1 and gridLoc[1] != -1:  # If it is over grid
-        recLoc = getRectCoord(pos, grid)  # Get the coordinates of which rectangle the mouse is in
+        recLoc = getRectCoord(position, gridLocation)  # Get the coordinates of which rectangle the mouse is in
         if recLoc[0] != -1 and recLoc[1] != -1:  # If in a valid box
             drawGrid()
             rect = pygame.Rect(recLoc[0], recLoc[1], block(), block())
