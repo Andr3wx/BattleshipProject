@@ -6,6 +6,7 @@ import numpy as np
 # import battleshipServer
 
 # Screen Size
+# ! Formatting works best weh height is 200 less than width
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
@@ -26,16 +27,36 @@ def block():
 
 
 def drawGrid():
+    rowVals = "123456789"
+    colVals = "ABCDEFGH"
     blockSize = block()
+    # Creates font size of grid coordinates based on block size
+    font = pygame.font.SysFont('arial', int(blockSize * .4330127))
+    incrementY = blockSize / 2  # Used to set location of where row coordinates should be
+    incrementX = blockSize / 2  # Used to set location of where column coordinates should be
+    screenValX = SCREEN_WIDTH * .08
+    screenValY = SCREEN_HEIGHT * .11
     counter2 = 0  # Makes sure there is only N number of rows
     gridLocation = {}
-    for x in np.arange(SCREEN_WIDTH*.175, SCREEN_WIDTH, blockSize):  # x represents row number
+    for x in np.arange(screenValX, SCREEN_WIDTH, blockSize):  # x represents row number
         counter1 = 0  # Makes sure there is only N number of Columns
         gridLocation[str(x)] = []
-        for y in np.arange(SCREEN_HEIGHT*.1, SCREEN_HEIGHT, blockSize):  # y represents column number
+        for y in np.arange(screenValY, SCREEN_HEIGHT, blockSize):  # y represents column number
+            # Adds grid coordinates to grid
+            if counter2 == 0 and counter1 == 0:
+                for z in range(len(colVals)):
+                    # Print values left of rows
+                    text = font.render(rowVals[z], True, lightBlue)
+                    screen.blit(text, (screenValX - (blockSize*.34641016), y + incrementY - (blockSize*.25980762)))
+                    # Print values above columns
+                    text = font.render(colVals[z], True, lightBlue)
+                    screen.blit(text, (x + incrementX - (blockSize*.12124356), screenValY - (blockSize*.51961524)))
+                    incrementX += blockSize
+                    incrementY += blockSize
+
             rect = pygame.Rect(x, y, blockSize, blockSize)
-            pygame.draw.rect(screen, lightBlue,rect)    # Fills rectangle
-            pygame.draw.rect(screen, black, rect, 1)    # Rectangle border
+            pygame.draw.rect(screen, lightBlue, rect)  # Fills rectangle
+            pygame.draw.rect(screen, black, rect, 1)  # Rectangle border
             counter1 = counter1 + 1
             if len(gridLocation[str(x)]) > 0:
                 gridLocation[str(x)].append(y)
@@ -44,6 +65,7 @@ def drawGrid():
             if counter1 == 8:
                 gridLocation[str(x)].append(y + blockSize)  # Needed to include area of final block
                 break
+
         counter2 = counter2 + 1
         if counter2 == 8:
             gridLocation[str(x + blockSize)] = gridLocation[str(x)]  # Needed to include area of final block
