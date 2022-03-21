@@ -131,6 +131,22 @@ def mouseHighlight(position, locationGrid):
         drawGrid()
         pygame.display.update()
 
+# class for ship functions
+class ships:
+    def __init__(self, name, x, y):
+        self.x = x
+        self.y = y
+        self.shipName = pygame.image.load('images/' + name + '.png')
+
+    def display(self):
+        screen.blit(self.shipName, (self.x, self.y))    # x and y will be dynamic
+
+    def changeLoc(self, new_x, new_y):
+        self.x = new_x
+        self.y = new_y
+
+
+
 
 if __name__ == "__main__":
     pygame.init()  # initialize pygame
@@ -138,6 +154,13 @@ if __name__ == "__main__":
     pygame.display.set_caption("Battleship")  # set caption
     icon = pygame.image.load('images/battleship.png')  # set game icon
     pygame.display.set_icon(icon)
+
+    # load ships
+    img_X = SCREEN_WIDTH * .65
+    corvette = ships('corvette', img_X, SCREEN_HEIGHT * .1)
+    sub = ships('sub', img_X, SCREEN_HEIGHT * .3)
+    destroyer = ships('destroyer', img_X, SCREEN_HEIGHT * .5)
+    carrier = ships('carrier', img_X, SCREEN_HEIGHT * .7)
 
     running = True
     grid = {}
@@ -161,3 +184,14 @@ if __name__ == "__main__":
         if len(grid.keys()) <= 0:
             grid = drawGrid()
             pygame.display.update()
+
+        # ! select ship and location
+        # ! ship.changeLoc(new_x, new_y)
+
+        # display ships
+        corvette.display()
+        sub.display()
+        destroyer.display()
+        carrier.display()
+
+
