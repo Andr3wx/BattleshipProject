@@ -136,7 +136,7 @@ if __name__ == "__main__":
     pygame.init()  # initialize pygame
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # create screen
     pygame.display.set_caption("Battleship")  # set caption
-    icon = pygame.image.load('battleship.png')  # set game icon
+    icon = pygame.image.load('images/battleship.png')  # set game icon
     pygame.display.set_icon(icon)
 
     running = True
