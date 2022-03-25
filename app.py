@@ -16,6 +16,12 @@ white = (255, 255, 255)
 lightBlue = (173, 216, 230)
 grey = (64, 64, 64)
 
+# Ship image dimensions (px)
+# Corvette = (115, 62)
+# Sub = (173, 45)
+# Destroyer = (230, 89)
+# Carrier = (288, 84)
+
 
 # functions
 def block():
@@ -131,21 +137,16 @@ def mouseHighlight(position, locationGrid):
         drawGrid()
         pygame.display.update()
 
-# class for ship functions
-class ships:
-    def __init__(self, name, x, y):
-        self.x = x
-        self.y = y
-        self.shipName = pygame.image.load('images/' + name + '.png')
+# Sprite class for ship pieces
+class Sprite(pygame.sprite.Sprite):
+    def __init__(self, ship_name, pos_x, pos_y):
+        super().__init__()
+        self.image = pygame.image.load('images/' + ship_name + '.png')
+        self.rect = self.image.get_rect()
+        self.rect.topleft = [pos_x, pos_y]
 
-    def display(self):
-        screen.blit(self.shipName, (self.x, self.y))    # x and y will be dynamic
-
-    def changeLoc(self, new_x, new_y):
-        self.x = new_x
-        self.y = new_y
-
-
+    def set_location(self, new_pos):
+        self.rect.center = [new_pos[0], new_pos[1]]
 
 
 if __name__ == "__main__":
@@ -155,28 +156,38 @@ if __name__ == "__main__":
     icon = pygame.image.load('images/battleship.png')  # set game icon
     pygame.display.set_icon(icon)
 
-    # load ships
+    # create ship objects
     img_X = SCREEN_WIDTH * .65
-    corvette = ships('corvette', img_X, SCREEN_HEIGHT * .1)
-    sub = ships('sub', img_X, SCREEN_HEIGHT * .3)
-    destroyer = ships('destroyer', img_X, SCREEN_HEIGHT * .5)
-    carrier = ships('carrier', img_X, SCREEN_HEIGHT * .7)
+    corvette = Sprite('corvette', img_X, SCREEN_HEIGHT * .1)
+    sub = Sprite('sub', img_X, SCREEN_HEIGHT * .3)
+    destroyer = Sprite('destroyer', img_X, SCREEN_HEIGHT * .5)
+    carrier = Sprite('carrier', img_X, SCREEN_HEIGHT * .7)
+
+    # Ship group
+    ship_group_layered = pygame.sprite.LayeredUpdates([corvette, sub, destroyer, carrier])
+    ship_group_layered.change_layer(corvette, 1)
+
 
     running = True
     grid = {}
     while running:
+        pos = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:  # press ESC to quit
                     running = False
             elif event.type == pygame.MOUSEBUTTONUP:
                 # ! Change this later to specific screen where grid shows
-                pos = pygame.mouse.get_pos()
                 print(checkIfGrid(pos, grid)[0], checkIfGrid(pos, grid)[1])
+
+        # ! testing
+        ship_group_layered.move_to_front(corvette)
+        corvette.set_location(pos)
+
         # Any mouse movement
         # ! Later make this only on grid screen
         if len(grid.keys()) != 0:
-            pos = pygame.mouse.get_pos()
+            # pos = pygame.mouse.get_pos()
             mouseHighlight(pos, grid)
 
         # RGB background
@@ -185,13 +196,6 @@ if __name__ == "__main__":
             grid = drawGrid()
             pygame.display.update()
 
-        # ! select ship and location
-        # ! ship.changeLoc(new_x, new_y)
-
         # display ships
-        corvette.display()
-        sub.display()
-        destroyer.display()
-        carrier.display()
-
+        ship_group_layered.draw(screen)
 
