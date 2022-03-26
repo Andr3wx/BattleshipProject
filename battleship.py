@@ -8,13 +8,13 @@
 
 class Battleships:
     # The number of ships every player will have
-    numOfShips = 5
+    numOfShips = 4
     # Ship positions
     shipPositions = dict()
     # Counts how many times a ship has been hit
     shipHit = dict()
     # Key List for ship names
-    keyList = ['A', 'B', 'C', 'D', 'E']
+    keyList = ['A', 'B', 'C', 'D']
     # Row and Column amount
     rowColumn = 8
     # Creates board of players ships
