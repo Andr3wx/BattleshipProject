@@ -15,6 +15,7 @@ black = (0, 0, 0)
 white = (255, 255, 255)
 lightBlue = (173, 216, 230)
 grey = (64, 64, 64)
+red = (139, 0, 0)
 
 
 # Ship image dimensions (px)
@@ -141,19 +142,84 @@ def mouseHighlight(position, locationGrid):
         pygame.display.update()
 
 
-def placingShips(pos):
-    if corvette.rect.collidepoint(pos):
-        corvette.set_location(pos)
+def shipSize(ship):
+    if ship == corvette:
+        return 2
+    elif ship == sub:
+        return 3
+    elif ship == destroyer:
+        return 4
+    elif ship == carrier:
+        return 5
+
+
+def shipHighlight(position, locationGrid, ship):
+    recLoc = []
+    color = white
+    drawGrid()
+    for i in range(shipSize(ship)):  # Determines how many boxes it needs to highlight
+        recLoc.append(getRectCoord(position, locationGrid))
+        gridLoc = checkIfGrid(position, locationGrid)
+        position = (position[0] + block(), position[1])
+        # If ship goes off the grid then blocks will highlight red
+        if gridLoc[0] == -1 or gridLoc[1] == -1:
+            color = red
+    for i in range(shipSize(ship)):
+        gridLoc = checkIfGrid(recLoc[i], locationGrid)
+        curLoc = recLoc[i]
+        if gridLoc[0] != -1 and gridLoc[1] != -1:
+            rect = pygame.Rect(curLoc[0], curLoc[1], block(), block())
+            pygame.draw.rect(screen, color, rect)  # Highlights given box
+            pygame.draw.rect(screen, black, rect, 1)
+    ship_group_layered.draw(screen)
+    pygame.display.update()
+
+    if color == red:
+        return False
+    return True
+
+
+def placingShips(position):
+    if corvette.rect.collidepoint(position):
+        corvette.set_location(position)
         return corvette
-    elif sub.rect.collidepoint(pos):
-        sub.set_location(pos)
+    elif sub.rect.collidepoint(position):
+        sub.set_location(position)
         return sub
-    elif destroyer.rect.collidepoint(pos):
-        destroyer.set_location(pos)
+    elif destroyer.rect.collidepoint(position):
+        destroyer.set_location(position)
         return destroyer
-    elif carrier.rect.collidepoint(pos):
-        carrier.set_location(pos)
+    elif carrier.rect.collidepoint(position):
+        carrier.set_location(position)
         return carrier
+
+
+# When user releases mouse and stops dragging ship, places ship into proper location
+def placingShipsRelease(position, locationGrid, sprite, onGrid):
+    positionShip = getRectCoord(position, locationGrid)
+    if sprite == corvette:
+        positionShip[0] = positionShip[0] + block()
+    elif sprite == sub:
+        positionShip[0] = positionShip[0] + (block() * 1.5)
+    elif sprite == destroyer:
+        positionShip[0] = positionShip[0] + (2 * block())
+    elif sprite == carrier:
+        positionShip[0] = positionShip[0] + (2.4 * block())
+
+    positionShip[1] = positionShip[1] + (block() * .485)
+
+    if onGrid:
+        sprite.set_location(positionShip)
+    else:
+        sprite.set_location(sprite.getStartLoc())
+
+
+# When user clicks and drags ship to location
+def shipIsHeld(position, sprite):
+    drawGrid()
+    sprite.set_location(position)
+    ship_group_layered.draw(screen)
+    pygame.display.update()
 
 
 # Sprite class for ship pieces
@@ -163,9 +229,13 @@ class Sprite(pygame.sprite.Sprite):
         self.image = pygame.image.load('images/' + ship_name + '.png')
         self.rect = self.image.get_rect()
         self.rect.topleft = [pos_x, pos_y]
+        self.startLoc = self.rect.center
 
     def set_location(self, new_pos):
         self.rect.center = [new_pos[0], new_pos[1]]
+
+    def getStartLoc(self):
+        return self.startLoc
 
 
 if __name__ == "__main__":
@@ -194,11 +264,8 @@ if __name__ == "__main__":
         pos = pygame.mouse.get_pos()
         #  placing ships
         if placing:
-            drawGrid()
-            curSprite.set_location(pos)
-            ship_group_layered.draw(screen)
-            pygame.display.update()
-
+            shipIsHeld(pos, curSprite)
+            allowToPlace = shipHighlight(pos, grid, curSprite)
 
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
@@ -206,6 +273,7 @@ if __name__ == "__main__":
                     running = False
             elif event.type == pygame.MOUSEBUTTONUP:
                 # ! Change this later to specific screen where grid shows
+                placingShipsRelease(pos, grid, curSprite, allowToPlace)
                 placing = False
                 print(checkIfGrid(pos, grid)[0], checkIfGrid(pos, grid)[1])
             elif event.type == pygame.MOUSEBUTTONDOWN:
