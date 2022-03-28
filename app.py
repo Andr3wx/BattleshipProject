@@ -222,6 +222,39 @@ def shipIsHeld(position, sprite):
     pygame.display.update()
 
 
+def moveShipScreen(placing, run, grid, curSprite):
+    pos = pygame.mouse.get_pos()
+    if placing:
+        shipIsHeld(pos, curSprite)
+        allowToPlace = shipHighlight(pos, grid, curSprite)
+
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:  # press ESC to quit
+                run = False
+        elif event.type == pygame.MOUSEBUTTONUP:
+            placingShipsRelease(pos, grid, curSprite, allowToPlace)
+            placing = False
+            print(checkIfGrid(pos, grid)[0], checkIfGrid(pos, grid)[1])
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            curSprite = placingShips(pos)
+            placing = True
+
+    # Any mouse movement
+    if len(grid.keys()) != 0:
+        if not placing:
+            mouseHighlight(pos, grid)
+
+    # RGB background
+    screen.fill(black)
+    if len(grid.keys()) <= 0:
+        grid = drawGrid()
+        ship_group_layered.draw(screen)
+        pygame.display.update()
+
+    return placing, run, grid, curSprite
+
+
 # Sprite class for ship pieces
 class Sprite(pygame.sprite.Sprite):
     def __init__(self, ship_name, pos_x, pos_y):
@@ -252,51 +285,16 @@ if __name__ == "__main__":
     destroyer = Sprite('destroyer', img_X, SCREEN_HEIGHT * .5)
     carrier = Sprite('carrier', img_X, SCREEN_HEIGHT * .7)
 
-    placing = False
-
     # Ship group
     ship_group_layered = pygame.sprite.LayeredUpdates([corvette, sub, destroyer, carrier])
     ship_group_layered.change_layer(corvette, 2)
 
     running = True
-    grid = {}
+    canPlace = False  # Indicates whether player is in the process of choosing a ship position
+    gridCord = {}  # Indicates the row rectangle coordinates and stores the column coordinates within the key
+    currentSprite = None
+    screenName = "Placing Ships"
     while running:
-        pos = pygame.mouse.get_pos()
-        #  placing ships
-        if placing:
-            shipIsHeld(pos, curSprite)
-            allowToPlace = shipHighlight(pos, grid, curSprite)
-
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:  # press ESC to quit
-                    running = False
-            elif event.type == pygame.MOUSEBUTTONUP:
-                # ! Change this later to specific screen where grid shows
-                placingShipsRelease(pos, grid, curSprite, allowToPlace)
-                placing = False
-                print(checkIfGrid(pos, grid)[0], checkIfGrid(pos, grid)[1])
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                curSprite = placingShips(pos)
-                placing = True
-
-        # ! testing
-        ship_group_layered.move_to_front(corvette)
-        # corvette.set_location(pos)
-
-        # Any mouse movement
-        # ! Later make this only on grid screen
-        if len(grid.keys()) != 0:
-            # pos = pygame.mouse.get_pos()
-            if not placing:
-                mouseHighlight(pos, grid)
-
-        # RGB background
-        screen.fill(black)
-        if len(grid.keys()) <= 0:
-            grid = drawGrid()
-            ship_group_layered.draw(screen)
-            pygame.display.update()
-
-        # display ships
-        ship_group_layered.draw(screen)
+        #  Placing ships
+        if screenName == "Placing Ships":
+            canPlace, running, gridCord, currentSprite = moveShipScreen(canPlace, running, gridCord, currentSprite)
