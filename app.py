@@ -123,7 +123,7 @@ def getRectCoord(cord, locationGrid):
     return [tempKey, tempCol]
 
 
-def mouseHighlight(position, locationGrid):
+def mouseHighlight(position, locationGrid, needShips):
     # Checks to see whether mouse is over grid
     gridLoc = checkIfGrid(position, locationGrid)
     if gridLoc[0] != -1 and gridLoc[1] != -1:  # If it is over grid
@@ -133,12 +133,12 @@ def mouseHighlight(position, locationGrid):
             rect = pygame.Rect(recLoc[0], recLoc[1], block(), block())
             pygame.draw.rect(screen, white, rect)  # Highlights given box
             pygame.draw.rect(screen, black, rect, 1)
-            ship_group_layered.draw(screen)
+            if needShips: ship_group_layered.draw(screen)
             pygame.display.update()  # Updates display
 
     else:  # If mouse not over grid, returns grid to original state and updates display
         drawGrid()
-        ship_group_layered.draw(screen)
+        if needShips: ship_group_layered.draw(screen)
         pygame.display.update()
 
 
@@ -235,7 +235,7 @@ def moveShipScreen(placing, run, grid, curSprite):
         elif event.type == pygame.MOUSEBUTTONUP:
             placingShipsRelease(pos, grid, curSprite, allowToPlace)
             placing = False
-            print(checkIfGrid(pos, grid)[0], checkIfGrid(pos, grid)[1])
+            # print(checkIfGrid(pos, grid)[0], checkIfGrid(pos, grid)[1])
         elif event.type == pygame.MOUSEBUTTONDOWN:
             curSprite = placingShips(pos)
             placing = True
@@ -243,7 +243,7 @@ def moveShipScreen(placing, run, grid, curSprite):
     # Any mouse movement
     if len(grid.keys()) != 0:
         if not placing:
-            mouseHighlight(pos, grid)
+            mouseHighlight(pos, grid, True)
 
     # RGB background
     screen.fill(black)
@@ -253,6 +253,29 @@ def moveShipScreen(placing, run, grid, curSprite):
         pygame.display.update()
 
     return placing, run, grid, curSprite
+
+def takeShotScreen(run,grid,clicked):
+    pos = pygame.mouse.get_pos()
+
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:  # press ESC to quit
+                run = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            clicked = True
+
+    # Any mouse movement
+    if len(grid.keys()) != 0 and not clicked:
+            mouseHighlight(pos, grid,False)
+
+    # RGB background
+    screen.fill(black)
+    if len(grid.keys()) <= 0:
+        grid = drawGrid()
+        pygame.display.update()
+
+    return run,grid,clicked
+
 
 
 # Sprite class for ship pieces
@@ -293,8 +316,11 @@ if __name__ == "__main__":
     canPlace = False  # Indicates whether player is in the process of choosing a ship position
     gridCord = {}  # Indicates the row rectangle coordinates and stores the column coordinates within the key
     currentSprite = None
+    click = False
     screenName = "Placing Ships"
     while running:
         #  Placing ships
         if screenName == "Placing Ships":
             canPlace, running, gridCord, currentSprite = moveShipScreen(canPlace, running, gridCord, currentSprite)
+        elif screenName == "Taking Shot":
+            running,gridCord,click = takeShotScreen(running,gridCord,click)
