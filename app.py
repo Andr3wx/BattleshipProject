@@ -123,7 +123,7 @@ def getRectCoord(cord, locationGrid):
     return [tempKey, tempCol]
 
 
-def mouseHighlight(position, locationGrid):
+def mouseHighlight(position, locationGrid, needShips):
     # Checks to see whether mouse is over grid
     gridLoc = checkIfGrid(position, locationGrid)
     if gridLoc[0] != -1 and gridLoc[1] != -1:  # If it is over grid
@@ -133,12 +133,12 @@ def mouseHighlight(position, locationGrid):
             rect = pygame.Rect(recLoc[0], recLoc[1], block(), block())
             pygame.draw.rect(screen, white, rect)  # Highlights given box
             pygame.draw.rect(screen, black, rect, 1)
-            ship_group_layered.draw(screen)
+            if needShips: ship_group_layered.draw(screen)
             pygame.display.update()  # Updates display
 
     else:  # If mouse not over grid, returns grid to original state and updates display
         drawGrid()
-        ship_group_layered.draw(screen)
+        if needShips: ship_group_layered.draw(screen)
         pygame.display.update()
 
 
@@ -152,7 +152,6 @@ def shipSize(ship):
     elif ship == carrier:
         return 5
 
-
 def shipHighlight(position, locationGrid, ship):
     recLoc = []
     color = white
@@ -164,6 +163,7 @@ def shipHighlight(position, locationGrid, ship):
         # If ship goes off the grid then blocks will highlight red
         if gridLoc[0] == -1 or gridLoc[1] == -1:
             color = red
+            
     for i in range(shipSize(ship)):
         gridLoc = checkIfGrid(recLoc[i], locationGrid)
         curLoc = recLoc[i]
@@ -192,6 +192,8 @@ def placingShips(position):
     elif carrier.rect.collidepoint(position):
         carrier.set_location(position)
         return carrier
+    else:
+        return None
 
 
 # When user releases mouse and stops dragging ship, places ship into proper location
@@ -221,14 +223,66 @@ def shipIsHeld(position, sprite):
     ship_group_layered.draw(screen)
     pygame.display.update()
 
-class Hit_Miss(pygame.sprite.Sprite):
-    def __init__(self, hit_miss):
-        super.__init__()
-        self.image = pygame.image.load('images/' + hit_miss + '.png')
-        self.rect = self.image.get_rect()
 
-    def set_location(self, new_pos):
-        self.rect.center = [new_pos[0], new_pos[1]]
+def moveShipScreen(placing, run, grid, curSprite):
+    pos = pygame.mouse.get_pos()
+    if placing:
+        shipIsHeld(pos, curSprite)
+        allowToPlace = shipHighlight(pos, grid, curSprite)
+
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:  # press ESC to quit
+                run = False
+        elif event.type == pygame.MOUSEBUTTONUP:
+            if placing:
+                placingShipsRelease(pos, grid, curSprite, allowToPlace)
+                placing = False
+            # print(checkIfGrid(pos, grid)[0], checkIfGrid(pos, grid)[1])
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            curSprite = placingShips(pos)
+            if curSprite is not None: placing = True
+
+    # Any mouse movement
+    if len(grid.keys()) != 0:
+        if not placing:
+            mouseHighlight(pos, grid, True)
+
+    # RGB background
+    screen.fill(black)
+    if len(grid.keys()) <= 0:
+        grid = drawGrid()
+        ship_group_layered.draw(screen)
+        pygame.display.update()
+
+    return placing, run, grid, curSprite
+
+
+def takeShotScreen(run, grid, clicked):
+    pos = pygame.mouse.get_pos()
+
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:  # press ESC to quit
+                run = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if clicked:
+                clicked = False
+            elif not clicked:
+                clicked = True
+
+    # Any mouse movement
+    if len(grid.keys()) != 0 and not clicked:
+        mouseHighlight(pos, grid, False)
+
+    # RGB background
+    screen.fill(black)
+    if len(grid.keys()) <= 0:
+        grid = drawGrid()
+        pygame.display.update()
+
+    return run, grid, clicked
+
 
 # Sprite class for ship pieces
 class Sprite(pygame.sprite.Sprite):
@@ -260,48 +314,19 @@ if __name__ == "__main__":
     destroyer = Sprite('destroyer', img_X, SCREEN_HEIGHT * .5)
     carrier = Sprite('carrier', img_X, SCREEN_HEIGHT * .7)
 
-    placing = False
-
     # Ship group
     ship_group_layered = pygame.sprite.LayeredUpdates([corvette, sub, destroyer, carrier])
     ship_group_layered.change_layer(corvette, 2)
 
     running = True
-    grid = {}
+    canPlace = False  # Indicates whether player is in the process of choosing a ship position
+    gridCord = {}  # Indicates the row rectangle coordinates and stores the column coordinates within the key
+    currentSprite = None
+    click = False
+    screenName = "Placing Ships"
     while running:
-        pos = pygame.mouse.get_pos()
-        #  placing ships
-        if placing:
-            shipIsHeld(pos, curSprite)
-            allowToPlace = shipHighlight(pos, grid, curSprite)
-
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:  # press ESC to quit
-                    running = False
-            elif event.type == pygame.MOUSEBUTTONUP:
-                # ! Change this later to specific screen where grid shows
-                placingShipsRelease(pos, grid, curSprite, allowToPlace)
-                placing = False
-                print(checkIfGrid(pos, grid)[0], checkIfGrid(pos, grid)[1])
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                curSprite = placingShips(pos)
-                placing = True
-
-
-        # Any mouse movement
-        # ! Later make this only on grid screen
-        if len(grid.keys()) != 0:
-            # pos = pygame.mouse.get_pos()
-            if not placing:
-                mouseHighlight(pos, grid)
-
-        # RGB background
-        screen.fill(black)
-        if len(grid.keys()) <= 0:
-            grid = drawGrid()
-            ship_group_layered.draw(screen)
-            pygame.display.update()
-
-        # display ships
-        ship_group_layered.draw(screen)
+        #  Placing ships
+        if screenName == "Placing Ships":
+            canPlace, running, gridCord, currentSprite = moveShipScreen(canPlace, running, gridCord, currentSprite)
+        elif screenName == "Taking Shot":
+            running, gridCord, click = takeShotScreen(running, gridCord, click)
