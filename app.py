@@ -221,6 +221,14 @@ def shipIsHeld(position, sprite):
     ship_group_layered.draw(screen)
     pygame.display.update()
 
+class Hit_Miss(pygame.sprite.Sprite):
+    def __init__(self, hit_miss):
+        super.__init__()
+        self.image = pygame.image.load('images/' + hit_miss + '.png')
+        self.rect = self.image.get_rect()
+
+    def set_location(self, new_pos):
+        self.rect.center = [new_pos[0], new_pos[1]]
 
 # Sprite class for ship pieces
 class Sprite(pygame.sprite.Sprite):
@@ -280,9 +288,6 @@ if __name__ == "__main__":
                 curSprite = placingShips(pos)
                 placing = True
 
-        # ! testing
-        ship_group_layered.move_to_front(corvette)
-        # corvette.set_location(pos)
 
         # Any mouse movement
         # ! Later make this only on grid screen
