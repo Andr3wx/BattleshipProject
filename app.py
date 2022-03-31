@@ -1,5 +1,6 @@
 import pygame
 import numpy as np
+from battleshipNetwork import Network
 
 # import battleship
 # import battleshipNetwork
@@ -27,10 +28,13 @@ red = (139, 0, 0)
 
 # functions
 def block():
-    blockSize = (SCREEN_WIDTH * SCREEN_HEIGHT) / 64  # Gets total area of the screen and divides it by number of
+    # Gets total area of the screen and divides it by number of
+    blockSize = (SCREEN_WIDTH * SCREEN_HEIGHT) / 64
     # squares in grid
-    blockSize = blockSize ** (1 / 2)  # Square roots the total area of a single grid to get the base and width
-    blockSize = blockSize / 1.5  # Shrinks the block size 1.5x of the previously calculated result
+    # Square roots the total area of a single grid to get the base and width
+    blockSize = blockSize ** (1 / 2)
+    # Shrinks the block size 1.5x of the previously calculated result
+    blockSize = blockSize / 1.5
     return blockSize
 
 
@@ -41,7 +45,8 @@ def drawGrid():
     # Creates font size of grid coordinates based on block size
     font = pygame.font.SysFont('arial', int(blockSize * .4330127))
     incrementY = blockSize / 2  # Used to set location of where row coordinates should be
-    incrementX = blockSize / 2  # Used to set location of where column coordinates should be
+    # Used to set location of where column coordinates should be
+    incrementX = blockSize / 2
     screenValX = SCREEN_WIDTH * .08
     screenValY = SCREEN_HEIGHT * .11
     counter2 = 0  # Makes sure there is only N number of rows
@@ -49,16 +54,19 @@ def drawGrid():
     for x in np.arange(screenValX, SCREEN_WIDTH, blockSize):  # x represents row number
         counter1 = 0  # Makes sure there is only N number of Columns
         gridLocation[str(x)] = []
-        for y in np.arange(screenValY, SCREEN_HEIGHT, blockSize):  # y represents column number
+        # y represents column number
+        for y in np.arange(screenValY, SCREEN_HEIGHT, blockSize):
             # Adds grid coordinates to grid
             if counter2 == 0 and counter1 == 0:
                 for z in range(len(colVals)):
                     # Print values left of rows
                     text = font.render(rowVals[z], True, lightBlue)
-                    screen.blit(text, (screenValX - (blockSize * .34641016), y + incrementY - (blockSize * .25980762)))
+                    screen.blit(text, (screenValX - (blockSize * .34641016),
+                                y + incrementY - (blockSize * .25980762)))
                     # Print values above columns
                     text = font.render(colVals[z], True, lightBlue)
-                    screen.blit(text, (x + incrementX - (blockSize * .12124356), screenValY - (blockSize * .51961524)))
+                    screen.blit(text, (x + incrementX - (blockSize * .12124356),
+                                screenValY - (blockSize * .51961524)))
                     incrementX += blockSize
                     incrementY += blockSize
 
@@ -71,12 +79,14 @@ def drawGrid():
             else:
                 gridLocation[str(x)] = [y]
             if counter1 == 8:
-                gridLocation[str(x)].append(y + blockSize)  # Needed to include area of final block
+                # Needed to include area of final block
+                gridLocation[str(x)].append(y + blockSize)
                 break
 
         counter2 = counter2 + 1
         if counter2 == 8:
-            gridLocation[str(x + blockSize)] = gridLocation[str(x)]  # Needed to include area of final block
+            # Needed to include area of final block
+            gridLocation[str(x + blockSize)] = gridLocation[str(x)]
             break
     return gridLocation
 
@@ -127,18 +137,21 @@ def mouseHighlight(position, locationGrid, needShips):
     # Checks to see whether mouse is over grid
     gridLoc = checkIfGrid(position, locationGrid)
     if gridLoc[0] != -1 and gridLoc[1] != -1:  # If it is over grid
-        recLoc = getRectCoord(position, locationGrid)  # Get the coordinates of which rectangle the mouse is in
+        # Get the coordinates of which rectangle the mouse is in
+        recLoc = getRectCoord(position, locationGrid)
         if recLoc[0] != -1 and recLoc[1] != -1:  # If in a valid box
             drawGrid()
             rect = pygame.Rect(recLoc[0], recLoc[1], block(), block())
             pygame.draw.rect(screen, white, rect)  # Highlights given box
             pygame.draw.rect(screen, black, rect, 1)
-            if needShips: ship_group_layered.draw(screen)
+            if needShips:
+                ship_group_layered.draw(screen)
             pygame.display.update()  # Updates display
 
     else:  # If mouse not over grid, returns grid to original state and updates display
         drawGrid()
-        if needShips: ship_group_layered.draw(screen)
+        if needShips:
+            ship_group_layered.draw(screen)
         pygame.display.update()
 
 
@@ -152,6 +165,7 @@ def shipSize(ship):
     elif ship == carrier:
         return 5
 
+
 def shipHighlight(position, locationGrid, ship):
     recLoc = []
     color = white
@@ -163,7 +177,7 @@ def shipHighlight(position, locationGrid, ship):
         # If ship goes off the grid then blocks will highlight red
         if gridLoc[0] == -1 or gridLoc[1] == -1:
             color = red
-            
+
     for i in range(shipSize(ship)):
         gridLoc = checkIfGrid(recLoc[i], locationGrid)
         curLoc = recLoc[i]
@@ -241,7 +255,8 @@ def moveShipScreen(placing, run, grid, curSprite):
             # print(checkIfGrid(pos, grid)[0], checkIfGrid(pos, grid)[1])
         elif event.type == pygame.MOUSEBUTTONDOWN:
             curSprite = placingShips(pos)
-            if curSprite is not None: placing = True
+            if curSprite is not None:
+                placing = True
 
     # Any mouse movement
     if len(grid.keys()) != 0:
@@ -284,6 +299,8 @@ def takeShotScreen(run, grid, clicked):
     return run, grid, clicked
 
 # Sprite class for hit and miss actions
+
+
 class Hit_Miss(pygame.sprite.Sprite):
     def __init__(self, hit_miss):
         super.__init__()
@@ -312,7 +329,8 @@ class Sprite(pygame.sprite.Sprite):
 
 if __name__ == "__main__":
     pygame.init()  # initialize pygame
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # create screen
+    screen = pygame.display.set_mode(
+        (SCREEN_WIDTH, SCREEN_HEIGHT))  # create screen
     pygame.display.set_caption("Battleship")  # set caption
     icon = pygame.image.load('images/battleship.png')  # set game icon
     pygame.display.set_icon(icon)
@@ -325,7 +343,8 @@ if __name__ == "__main__":
     carrier = Sprite('carrier', img_X, SCREEN_HEIGHT * .7)
 
     # Ship group
-    ship_group_layered = pygame.sprite.LayeredUpdates([corvette, sub, destroyer, carrier])
+    ship_group_layered = pygame.sprite.LayeredUpdates(
+        [corvette, sub, destroyer, carrier])
     ship_group_layered.change_layer(corvette, 2)
 
     running = True
@@ -337,6 +356,7 @@ if __name__ == "__main__":
     while running:
         #  Placing ships
         if screenName == "Placing Ships":
-            canPlace, running, gridCord, currentSprite = moveShipScreen(canPlace, running, gridCord, currentSprite)
+            canPlace, running, gridCord, currentSprite = moveShipScreen(
+                canPlace, running, gridCord, currentSprite)
         elif screenName == "Taking Shot":
             running, gridCord, click = takeShotScreen(running, gridCord, click)
