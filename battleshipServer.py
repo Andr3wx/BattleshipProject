@@ -1,8 +1,9 @@
 import socket
-import _thread
+from _thread import *
 import sys
+import pickle
 
-server = "172.22.8.144"
+server = "172.22.12.73"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -16,31 +17,45 @@ except socket.error as e:
     str(e)
 
 s.listen(2)
-print("waiting for a connection, Server started")
+print("Server started")
+
+connected = set()
+games = {}
+idCound = 0
 
 
-def threaded_client(conn):
-    conn.send(str.encode("Connected"))
+def threaded_client(conn, p, gameID):
+    global idCount
+    conn.send(str.encode(str(p)))
+
     reply = ""
     while True:
-        try:
-            data = conn.recv(2048)
-            reply = data.decode("utf-8")
+        data = conn.recv(4096).decode()
+
+        if gameId in games:
+            game = games[gameId]
 
             if not data:
-                print("Disconnected")
                 break
             else:
-                print("Recieved: ", reply)
-                print("Sending: ", reply)
-            conn.sendall(str.encode(reply))
-        except:
-            break
-    print("Lost connection")
-    conn.close()
+
+                if data != "get":
+                    # if the data being recieved is a move
+                reply = game
+                conn.sendall(pickle.dumps(reply))
 
 
 while True:
     conn, addr = s.accept()
     print("Connected to:", addr)
-    start_new_thread(threaded_client, (conn,))
+
+    idCount += 1
+    p = 0
+    gameID = (idCount - 1) // 2
+    if idCount % 2 == 1:
+        games[gameId] = Game(gameId)
+        print("creating a new game")
+    else:
+        games[gameId].ready = True
+        p = 1
+    start_new_thread(threaded_client, (conn, p, gameId))
