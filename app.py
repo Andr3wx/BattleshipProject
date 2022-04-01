@@ -193,6 +193,17 @@ def checkSpot(shipLoc, ship, recLoc, color):
     return color, shipLoc
 
 
+def highlightedBoxes(ship, recLoc, locationGrid, color):
+    for i in range(shipSize(ship)):
+        # Goes through all coordinates to know which blocks to highlight if part of ship is off grid
+        gridLoc = checkIfGrid(recLoc[i], locationGrid)
+        curLoc = recLoc[i]  # Current location of block being looked at
+        if gridLoc[0] != -1 and gridLoc[1] != -1:  # If block is on the grid, highlights box on grid
+            rect = pygame.Rect(curLoc[0], curLoc[1], block(), block())
+            pygame.draw.rect(screen, color, rect)  # Highlights given box
+            pygame.draw.rect(screen, black, rect, 1)
+
+
 def shipHighlight(position, locationGrid, ship, shipLoc):
     recLoc = []
     color = white
@@ -209,14 +220,8 @@ def shipHighlight(position, locationGrid, ship, shipLoc):
     if color == white:
         color, shipLoc = checkSpot(shipLoc, ship, recLoc, color)  # Checks whether another ship occupies spot
 
-    for i in range(shipSize(ship)):
-        # Goes through all coordinates from above and makes sure they are on grid
-        gridLoc = checkIfGrid(recLoc[i], locationGrid)
-        curLoc = recLoc[i]  # Current location of block being looked at
-        if gridLoc[0] != -1 and gridLoc[1] != -1:  # If block is on the grid, highlights box on grid
-            rect = pygame.Rect(curLoc[0], curLoc[1], block(), block())
-            pygame.draw.rect(screen, color, rect)  # Highlights given box
-            pygame.draw.rect(screen, black, rect, 1)
+    highlightedBoxes(ship, recLoc, locationGrid, color)
+
     ship_group_layered.draw(screen)
     pygame.display.update()
 
