@@ -19,4 +19,4 @@ As for the multiplayer functionality, we have setup a basic network and server w
 We have also began the initial setup of the back-end part of the game that sets up each players gameboard with some other functions such as placing a ship in a given location, checking whether a ship exists in a given position. These features will be developed further on that will allow players to choose where they want to shoot and allow players to customize where they want their ships.
 
 Status Report 2:
-The new libraries we have added are numpy and OcempGUI. We haven't changed any goals from the original plan.
+The new libraries we have added are numpy, OcempGUI, pickle, and \_\thread. We haven't changed any goals from the original plan.
