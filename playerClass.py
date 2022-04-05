@@ -9,6 +9,7 @@ class Player:
         self.ties = 0
 
     def get_player_move(self, p):
+
         return self.moves[p]
 
     def player(self, player, move):

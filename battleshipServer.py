@@ -2,9 +2,12 @@ import socket
 from _thread import *
 import sys
 import pickle
+from playerClass import Player
 
-server = "172.22.12.73"
+
+server = socket.gethostbyname(socket.gethostname())
 port = 5555
+global idCount
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -21,28 +24,45 @@ print("Server started")
 
 connected = set()
 games = {}
-idCound = 0
+idCount = 0
 
 
 def threaded_client(conn, p, gameID):
-    global idCount
+
     conn.send(str.encode(str(p)))
 
     reply = ""
     while True:
-        data = conn.recv(4096).decode()
+        try:
 
-        if gameId in games:
-            game = games[gameId]
+            data = conn.recv(4096).decode()
 
-            if not data:
-                break
+            if gameID in games:
+                game = games[gameID]
+
+                if not data:
+                    break
+                else:
+
+                    if data != "get":
+                        # if the data being recieved is a move
+
+                        reply = game
+                        conn.sendall(pickle.dumps(reply))
+                    elif data == "win" or data == "lose":
+                        game.reset()
             else:
-
-                if data != "get":
-                    # if the data being recieved is a move
-                reply = game
-                conn.sendall(pickle.dumps(reply))
+                break
+        except:
+            break
+    print("lost connection")
+    print("closing game", gameID)
+    try:
+        del games[gameID]
+    except:
+        pass
+    idCount -= 1
+    conn.close()
 
 
 while True:
@@ -53,9 +73,9 @@ while True:
     p = 0
     gameID = (idCount - 1) // 2
     if idCount % 2 == 1:
-        games[gameId] = Game(gameId)
+        games[gameID] = Player(gameID)
         print("creating a new game")
     else:
-        games[gameId].ready = True
+        games[gameID].ready = True
         p = 1
-    start_new_thread(threaded_client, (conn, p, gameId))
+    start_new_thread(threaded_client, (conn, p, gameID))

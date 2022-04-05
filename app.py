@@ -159,31 +159,75 @@ def shipSize(ship):
         return 5
 
 
-def shipHighlight(position, locationGrid, ship):
-    recLoc = []
-    color = white
-    drawGrid()
-    for i in range(shipSize(ship)):  # Determines how many boxes it needs to highlight
-        recLoc.append(getRectCoord(position, locationGrid))
-        gridLoc = checkIfGrid(position, locationGrid)
-        position = (position[0] + block(), position[1])
-        # If ship goes off the grid then blocks will highlight red
-        if gridLoc[0] == -1 or gridLoc[1] == -1:
-            color = red
+def checkSpot(shipLoc, ship, recLoc, color):
+    for i in shipLoc:  # Loops through ships
+        if i == ship:  # If current key is current ship, skip
+            continue
+        else:
+            # Other ship than currents rectangular coordinates
+            temp = shipLoc[i]
+            otherShipBeg = temp[0]  # Other ship begin coordinates
+            otherShipEnd = temp[-1]  # Other ship end coordinates
+            curShipBeg = recLoc[0]
+            # Takes first and last coordinates of current ship
+            curShipEnd = recLoc[-1]
+            # Only comparing x coordinates right now
+            if otherShipBeg != -1 or otherShipEnd != -1:
+                if otherShipBeg[0] <= curShipBeg[0] <= otherShipEnd[0] \
+                        and otherShipBeg[1] == curShipBeg[1] == otherShipEnd[1]:
+                    color = red
+                    break
+                elif otherShipBeg[0] <= curShipEnd[0] <= otherShipEnd[0] \
+                        and otherShipBeg[1] == curShipEnd[1] == otherShipEnd[1]:
+                    color = red
+                    break
+                elif curShipBeg[0] <= otherShipBeg[0] <= curShipEnd[0] \
+                        and curShipBeg[1] == otherShipBeg[1] == curShipEnd[1]:
+                    color = red
+                    break
+    return color, shipLoc
 
+
+def highlightedBoxes(ship, recLoc, locationGrid, color):
     for i in range(shipSize(ship)):
+        # Goes through all coordinates to know which blocks to highlight if part of ship is off grid
         gridLoc = checkIfGrid(recLoc[i], locationGrid)
-        curLoc = recLoc[i]
+        curLoc = recLoc[i]  # Current location of block being looked at
+        # If block is on the grid, highlights box on grid
         if gridLoc[0] != -1 and gridLoc[1] != -1:
             rect = pygame.Rect(curLoc[0], curLoc[1], block(), block())
             pygame.draw.rect(screen, color, rect)  # Highlights given box
             pygame.draw.rect(screen, black, rect, 1)
+
+
+def shipHighlight(position, locationGrid, ship, shipLoc):
+    recLoc = []
+    color = white
+    drawGrid()
+    for i in range(shipSize(ship)):  # Determines how many boxes it needs to highlight
+        # ! Need to modify once allow ship rotation
+        # Gets rectangular coordinates
+        recLoc.append(getRectCoord(position, locationGrid))
+        gridLoc = checkIfGrid(position, locationGrid)
+        # If orientation is horizontal, gets the block positions in the x direction
+        position = (position[0] + block(), position[1])
+        # If ship goes off the grid then blocks will highlight red
+        if gridLoc[0] == -1 or gridLoc[1] == -1:
+            color = red
+    if color == white:
+        # Checks whether another ship occupies spot
+        color, shipLoc = checkSpot(shipLoc, ship, recLoc, color)
+
+    highlightedBoxes(ship, recLoc, locationGrid, color)
+
     ship_group_layered.draw(screen)
     pygame.display.update()
 
     if color == red:
-        return False
-    return True
+        shipLoc[ship] = [-1, -1]
+        return False, shipLoc
+    shipLoc[ship] = recLoc
+    return True, shipLoc
 
 
 def placingShips(position):
@@ -231,11 +275,16 @@ def shipIsHeld(position, sprite, group):
     pygame.display.update()
 
 
-def moveShipScreen(placing, run, grid, curSprite):
+def moveShipScreen(placing, run, grid, curSprite, shipLoc):
     pos = pygame.mouse.get_pos()
     if placing:
+
         shipIsHeld(pos, curSprite, ship_group_layered)
         allowToPlace = shipHighlight(pos, grid, curSprite)
+
+        # shipIsHeld(pos, curSprite)
+        # allowToPlace, shipLoc = shipHighlight(pos, grid, curSprite, shipLoc)
+
 
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
@@ -263,7 +312,7 @@ def moveShipScreen(placing, run, grid, curSprite):
         ship_group_layered.draw(screen)
         pygame.display.update()
 
-    return placing, run, grid, curSprite
+    return placing, run, grid, curSprite, shipLoc
 
 
 def takeShotScreen(run, grid, clicked):
@@ -346,6 +395,9 @@ if __name__ == "__main__":
     pygame.display.set_caption("Battleship")  # set caption
     icon = pygame.image.load('images/battleship.png')  # set game icon
     pygame.display.set_icon(icon)
+    n = Network()
+    player = n.getP()
+    print("you are player: ", player)
 
     # create ship objects
     img_X = SCREEN_WIDTH * .65
@@ -370,10 +422,17 @@ if __name__ == "__main__":
     currentSprite = None
     click = False
     screenName = "Placing Ships"
+    shipPos = {corvette: [-1, -1], sub: [-1, -1],
+               destroyer: [-1, -1], carrier: [-1, -1]}
     while running:
         #  Placing ships
         if screenName == "Placing Ships":
-            canPlace, running, gridCord, currentSprite = moveShipScreen(
-                canPlace, running, gridCord, currentSprite)
+            canPlace, running, gridCord, currentSprite, shipPos = moveShipScreen(
+                canPlace, running, gridCord, currentSprite, shipPos)
+            if player == 0:
+                n.send("send")
+            elif player == 1:
+                n.send("receive")
+
         elif screenName == "Taking Shot":
             running, gridCord, click = takeShotScreen(running, gridCord, click)
