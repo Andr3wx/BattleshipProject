@@ -18,6 +18,7 @@ lightBlue = (173, 216, 230)
 grey = (64, 64, 64)
 red = (139, 0, 0)
 
+
 # functions
 def block():
     # Gets total area of the screen and divides it by number of
@@ -54,11 +55,11 @@ def drawGrid():
                     # Print values left of rows
                     text = font.render(rowVals[z], True, lightBlue)
                     screen.blit(text, (screenValX - (blockSize * .34641016),
-                                y + incrementY - (blockSize * .25980762)))
+                                       y + incrementY - (blockSize * .25980762)))
                     # Print values above columns
                     text = font.render(colVals[z], True, lightBlue)
                     screen.blit(text, (x + incrementX - (blockSize * .12124356),
-                                screenValY - (blockSize * .51961524)))
+                                       screenValY - (blockSize * .51961524)))
                     incrementX += blockSize
                     incrementY += blockSize
 
@@ -282,7 +283,7 @@ def takeShotScreen(run, grid, clicked):
                 drawGrid()
                 hit = Hit_Miss("hit")
                 hit.set_location(pos)
-                hit_miss_group_layered.draw(hit)
+                pygame.sprite.LayeredUpdates([hit]).draw(screen)
                 clicked = True
                 pygame.display.update()
 
@@ -290,7 +291,7 @@ def takeShotScreen(run, grid, clicked):
                 drawGrid()
                 miss = Hit_Miss("miss")
                 miss.set_location(pos)
-                hit_miss_group_layered.draw(miss)
+                pygame.sprite.LayeredUpdates([miss]).draw(screen)
                 clicked = True
                 pygame.display.update()
 
@@ -302,10 +303,11 @@ def takeShotScreen(run, grid, clicked):
     screen.fill(black)
     if len(grid.keys()) <= 0:
         grid = drawGrid()
-        hit_miss_group_layered.draw(screen)
+        # hit_miss_group_layered.draw(screen)
         pygame.display.update()
 
     return run, grid, clicked
+
 
 # Sprite class for hit and miss actions
 class Hit_Miss(pygame.sprite.Sprite):
@@ -356,7 +358,6 @@ if __name__ == "__main__":
     # create players
     P1 = playerClass.Player(1)
     P2 = playerClass.Player(2)
-
 
     running = True
     canPlace = False  # Indicates whether player is in the process of choosing a ship position
