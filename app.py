@@ -1,5 +1,6 @@
 import pygame
 import numpy as np
+import playerClass
 from battleshipNetwork import Network
 
 # import battleship
@@ -7,7 +8,6 @@ from battleshipNetwork import Network
 # import battleshipServer
 
 # Screen Size
-# ! Formatting works best when height is 200 less than width
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
@@ -17,13 +17,6 @@ white = (255, 255, 255)
 lightBlue = (173, 216, 230)
 grey = (64, 64, 64)
 red = (139, 0, 0)
-
-
-# Ship image dimensions (px)
-# Corvette = (115, 62)
-# Sub = (173, 45)
-# Destroyer = (230, 89)
-# Carrier = (288, 84)
 
 
 # functions
@@ -275,18 +268,23 @@ def placingShipsRelease(position, locationGrid, sprite, onGrid):
 
 
 # When user clicks and drags ship to location
-def shipIsHeld(position, sprite):
+def shipIsHeld(position, sprite, group):
     drawGrid()
     sprite.set_location(position)
-    ship_group_layered.draw(screen)
+    group.draw(screen)
     pygame.display.update()
 
 
 def moveShipScreen(placing, run, grid, curSprite, shipLoc):
     pos = pygame.mouse.get_pos()
     if placing:
-        shipIsHeld(pos, curSprite)
-        allowToPlace, shipLoc = shipHighlight(pos, grid, curSprite, shipLoc)
+
+        shipIsHeld(pos, curSprite, ship_group_layered)
+        allowToPlace = shipHighlight(pos, grid, curSprite)
+
+        # shipIsHeld(pos, curSprite)
+        # allowToPlace, shipLoc = shipHighlight(pos, grid, curSprite, shipLoc)
+
 
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
@@ -318,6 +316,7 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc):
 
 
 def takeShotScreen(run, grid, clicked):
+    is_hit = True
     pos = pygame.mouse.get_pos()
 
     for event in pygame.event.get():
@@ -325,10 +324,29 @@ def takeShotScreen(run, grid, clicked):
             if event.key == pygame.K_ESCAPE:  # press ESC to quit
                 run = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if clicked:
-                clicked = False
-            elif not clicked:
+
+            print(checkIfGrid(pos, grid)[0], checkIfGrid(pos, grid)[1])
+            # send to other player to see if hit or miss
+
+            if is_hit:
+                drawGrid()
+                hit = Hit_Miss("hit")
+                positionHit = getRectCoord(pos, grid)
+                hit.set_location(positionHit)
+                hit_miss_group_layered.add(hit)
+                hit_miss_group_layered.draw(screen)
                 clicked = True
+                pygame.display.update()
+
+            else:
+                drawGrid()
+                miss = Hit_Miss("miss")
+                positionMiss = getRectCoord(pos, grid)
+                miss.set_location(positionMiss)
+                hit_miss_group_layered.add(miss)
+                hit_miss_group_layered.draw(screen)
+                clicked = True
+                pygame.display.update()
 
     # Any mouse movement
     if len(grid.keys()) != 0 and not clicked:
@@ -344,16 +362,14 @@ def takeShotScreen(run, grid, clicked):
 
 
 # Sprite class for hit and miss actions
-
-
 class Hit_Miss(pygame.sprite.Sprite):
     def __init__(self, hit_miss):
-        super.__init__()
+        super().__init__()
         self.image = pygame.image.load('images/' + hit_miss + '.png')
         self.rect = self.image.get_rect()
 
     def set_location(self, new_pos):
-        self.rect.center = [new_pos[0], new_pos[1]]
+        self.rect.topleft = [new_pos[0], new_pos[1]]
 
 
 # Sprite class for ship pieces
@@ -393,7 +409,12 @@ if __name__ == "__main__":
     # Ship group
     ship_group_layered = pygame.sprite.LayeredUpdates(
         [corvette, sub, destroyer, carrier])
-    ship_group_layered.change_layer(corvette, 2)
+    # Group of Hit and Miss instances
+    hit_miss_group_layered = pygame.sprite.LayeredUpdates([])
+
+    # create players
+    P1 = playerClass.Player(1)
+    P2 = playerClass.Player(2)
 
     running = True
     canPlace = False  # Indicates whether player is in the process of choosing a ship position
