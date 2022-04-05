@@ -268,7 +268,6 @@ def moveShipScreen(placing, run, grid, curSprite):
 
 def takeShotScreen(run, grid, clicked):
     is_hit = True
-    hit_miss_group_layered = pygame.sprite.LayeredUpdates([])
     pos = pygame.mouse.get_pos()
 
     for event in pygame.event.get():
@@ -276,22 +275,27 @@ def takeShotScreen(run, grid, clicked):
             if event.key == pygame.K_ESCAPE:  # press ESC to quit
                 run = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
+
             print(checkIfGrid(pos, grid)[0], checkIfGrid(pos, grid)[1])
             # send to other player to see if hit or miss
 
             if is_hit:
                 drawGrid()
                 hit = Hit_Miss("hit")
-                hit.set_location(pos)
-                pygame.sprite.LayeredUpdates([hit]).draw(screen)
+                positionHit = getRectCoord(pos, grid)
+                hit.set_location(positionHit)
+                hit_miss_group_layered.add(hit)
+                hit_miss_group_layered.draw(screen)
                 clicked = True
                 pygame.display.update()
 
             else:
                 drawGrid()
                 miss = Hit_Miss("miss")
-                miss.set_location(pos)
-                pygame.sprite.LayeredUpdates([miss]).draw(screen)
+                positionMiss = getRectCoord(pos, grid)
+                miss.set_location(positionMiss)
+                hit_miss_group_layered.add(miss)
+                hit_miss_group_layered.draw(screen)
                 clicked = True
                 pygame.display.update()
 
@@ -303,7 +307,6 @@ def takeShotScreen(run, grid, clicked):
     screen.fill(black)
     if len(grid.keys()) <= 0:
         grid = drawGrid()
-        # hit_miss_group_layered.draw(screen)
         pygame.display.update()
 
     return run, grid, clicked
@@ -317,7 +320,7 @@ class Hit_Miss(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
     def set_location(self, new_pos):
-        self.rect.center = [new_pos[0], new_pos[1]]
+        self.rect.topleft = [new_pos[0], new_pos[1]]
 
 
 # Sprite class for ship pieces
@@ -354,6 +357,8 @@ if __name__ == "__main__":
     # Ship group
     ship_group_layered = pygame.sprite.LayeredUpdates(
         [corvette, sub, destroyer, carrier])
+    # Group of Hit and Miss instances
+    hit_miss_group_layered = pygame.sprite.LayeredUpdates([])
 
     # create players
     P1 = playerClass.Player(1)
@@ -364,7 +369,7 @@ if __name__ == "__main__":
     gridCord = {}  # Indicates the row rectangle coordinates and stores the column coordinates within the key
     currentSprite = None
     click = False
-    screenName = "Taking Shot"
+    screenName = "Placing Ships"
     while running:
         #  Placing ships
         if screenName == "Placing Ships":
