@@ -392,8 +392,8 @@ if __name__ == "__main__":
     icon = pygame.image.load('images/battleship.png')  # set game icon
     pygame.display.set_icon(icon)
     n = Network()
-    player = n.getP()
-    print("you are player: ", player)
+   # player = n.getP()
+    #print("you are player: ", player)
 
     # create ship objects
     img_X = SCREEN_WIDTH * .65
@@ -409,8 +409,8 @@ if __name__ == "__main__":
     hit_miss_group_layered = pygame.sprite.LayeredUpdates([])
 
     # create players
-    P1 = playerClass.Player(1)
-    P2 = playerClass.Player(2)
+    # P1 = playerClass.Player(1)
+    # P2 = playerClass.Player(2)
 
     running = True
     canPlace = False  # Indicates whether player is in the process of choosing a ship position
@@ -425,10 +425,10 @@ if __name__ == "__main__":
         if screenName == "Placing Ships":
             canPlace, running, gridCord, currentSprite, shipPos = moveShipScreen(
                 canPlace, running, gridCord, currentSprite, shipPos)
-            if player == 0:
-                n.send("send")
-            elif player == 1:
-                n.send("receive")
+            # if player == 0:
+            #     n.send("send")
+            # elif player == 1:
+            #     n.send("receive")
 
         elif screenName == "Taking Shot":
             running, gridCord, click = takeShotScreen(running, gridCord, click)
