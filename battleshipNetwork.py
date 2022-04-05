@@ -7,9 +7,8 @@ class Network:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         ip = get('https://api.ipify.org').content.decode('utf8')
-        # print('My public IP address is: {}'.format(ip))
-        self.server = ip
-        # socket.gethostbyname(socket.gethostname())
+        print('My public IP address is: {}'.format(ip))
+        self.server = socket.gethostbyname(socket.gethostname())
         print(self.server)
         self.port = 5555
         self.addr = (self.server, self.port)
