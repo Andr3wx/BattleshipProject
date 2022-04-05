@@ -268,22 +268,18 @@ def placingShipsRelease(position, locationGrid, sprite, onGrid):
 
 
 # When user clicks and drags ship to location
-def shipIsHeld(position, sprite, group):
+def shipIsHeld(position, sprite):
     drawGrid()
     sprite.set_location(position)
-    group.draw(screen)
+    ship_group_layered.draw(screen)
     pygame.display.update()
 
 
 def moveShipScreen(placing, run, grid, curSprite, shipLoc):
     pos = pygame.mouse.get_pos()
     if placing:
-
-        shipIsHeld(pos, curSprite, ship_group_layered)
-        allowToPlace = shipHighlight(pos, grid, curSprite)
-
-        # shipIsHeld(pos, curSprite)
-        # allowToPlace, shipLoc = shipHighlight(pos, grid, curSprite, shipLoc)
+        shipIsHeld(pos, curSprite)
+        allowToPlace, shipLoc = shipHighlight(pos, grid, curSprite, shipLoc)
 
 
     for event in pygame.event.get():
