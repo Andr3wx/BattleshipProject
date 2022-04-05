@@ -5,7 +5,7 @@ import pickle
 from playerClass import Player
 
 
-server = " "
+server = ''
 #
 port = 5555
 global idCount
@@ -15,6 +15,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
     s.bind((server, port))
+    # print("yes")
 
 
 except socket.error as e:
@@ -24,8 +25,8 @@ s.listen(2)
 print("Server started")
 while True:
     print("in")
-    (conn,addr) =s.accept()
-    print(addr)
+    conn,addr =s.accept()
+    print(conn)
 
 connected = set()
 games = {}
