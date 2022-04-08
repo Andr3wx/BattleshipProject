@@ -6,40 +6,34 @@ from requests import get
 class Network:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        #ip = get('https://api.ipify.org').content.decode('utf8')
-        #print('My public IP address is: {}'.format(ip))
-
-        #print(socket.gethostbyname(socket.getfqdn()))
-        #print(self.client.getfqdn())
-        self.server = socket.gethostbyname(socket.gethostname())
-
-
-
+        self.server = socket.gethostbyname_ex(socket.gethostname())[-1]
+        for i in self.server:
+            if i[0]+i[1]+i[2] == '127':     # Checks to see whether IP is a loopback address
+                continue
+            else:
+                self.server = i
+                break
+        #print(socket.gethostbyname_ex(socket.gethostname()))
         # socket.gethostname()
-        #print(self.server)
+        print(self.server)
         self.port = 5555
         self.addr = (self.server, self.port)
         self.client.connect(self.addr)
-    # def __init__(self):
-    #     self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #     self.server = socket.gethostbyname(socket.gethostname())
-    #     self.port = 5555
-    #     self.addr = (self.server, self.port)
-    #     self.p = self.connect()
 
-    # def getP(self):
-    #     return self.p
-    #
-    # def connect(self):
-    #     try:
-    #         self.client.connect(self.addr)
-    #         return self.client.recv(2048).decode()
-    #     except:
-    #         pass
-    #
-    # def send(self, data):
-    #     try:
-    #         self.client.send(str.encode(data))
-    #         return pickle.loads(self.client.recv(2048))
-    #     except socket.error as e:
-    #         print(e)
+
+    def getP(self):
+        return self.p
+
+    def connect(self):
+        try:
+            self.client.connect(self.addr)
+            return self.client.recv(2048).decode()
+        except:
+            pass
+
+    def send(self, data):
+        try:
+            self.client.send(str.encode(data))
+            return pickle.loads(self.client.recv(2048))
+        except socket.error as e:
+            print(e)
