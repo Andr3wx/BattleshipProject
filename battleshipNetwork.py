@@ -13,13 +13,12 @@ class Network:
             else:
                 self.server = i
                 break
-        #print(socket.gethostbyname_ex(socket.gethostname()))
+        print(socket.gethostbyname_ex(socket.gethostname()))
         # socket.gethostname()
         print(self.server)
         self.port = 5555
         self.addr = (self.server, self.port)
         self.client.connect(self.addr)
-
 
     def getP(self):
         return self.p
