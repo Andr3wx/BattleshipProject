@@ -369,8 +369,12 @@ if __name__ == "__main__":
     icon = pygame.image.load('images/battleship.png')  # set game icon
     pygame.display.set_icon(icon)
     n = Network()
-   # player = n.getP()
-    #print("you are player: ", player)
+    #n.send("Check")
+    player = n.getP()
+    print("you are player: ", player)
+    screenName = n.receive()
+    print(screenName)
+    n.send("Test")
 
     # create ship objects
     img_X = SCREEN_WIDTH * .65
@@ -394,7 +398,7 @@ if __name__ == "__main__":
     gridCord = {}  # Indicates the row rectangle coordinates and stores the column coordinates within the key
     currentSprite = None
     click = False
-    screenName = "Placing Ships"
+    #screenName = "Placing Ships"
     shipPos = {corvette: [-1, -1], sub: [-1, -1],
                destroyer: [-1, -1], carrier: [-1, -1]}
     while running:
