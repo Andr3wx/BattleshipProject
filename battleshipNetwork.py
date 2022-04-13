@@ -7,7 +7,7 @@ import os
 class Network:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
+        self.client.settimeout(30)
         self.server = socket.gethostbyname_ex(socket.gethostname())[-1]
         #self.server = '172.22.5.117'
         for i in self.server:
@@ -24,7 +24,8 @@ class Network:
         self.addr = (self.server, self.port)
         self.client.connect(self.addr)
         self.p = self.client.recv(2048).decode()
-        print(self.p)
+        #print(self.p)
+
 
     def getP(self):
         return self.p
@@ -43,9 +44,13 @@ class Network:
         except socket.error as e:
             print(e)
 
-    def receive(self):
+    def receive(self, block=True):
         try:
-            msg = self.client.recv(2048).decode()
-            return msg
+            if block:
+                msg = self.client.recv(2048).decode()
+                return msg
+            else:
+                msg = self.client.recv(2048).decode()
+                return msg
         except socket.error as e:
             print(e)

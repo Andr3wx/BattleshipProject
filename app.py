@@ -276,11 +276,22 @@ def shipIsHeld(position, sprite):
     pygame.display.update()
 
 
-def moveShipScreen(placing, run, grid, curSprite, shipLoc, network):
+def moveShipScreen(placing, run, grid, curSprite, shipLoc, network,screenN):
     pos = pygame.mouse.get_pos()
     if placing:
         shipIsHeld(pos, curSprite)
         allowToPlace, shipLoc = shipHighlight(pos, grid, curSprite, shipLoc)
+
+    allPlaced = True
+    for x in shipLoc:
+        temp = shipLoc[x]
+        if temp[0] == -1 or temp[1] == -1:
+            allPlaced = False
+            break
+    print(allPlaced)
+    if allPlaced and not placing:
+        network.send("done")
+        screenN = network.receive(False)
 
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
@@ -296,14 +307,9 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc, network):
             if curSprite is not None:
                 placing = True
 
-    allPlaced = True
-    for x in shipLoc:
-        temp = shipLoc[x]
-        if  temp[0] == -1 or temp[1] == -1:
-            allPlaced = False
-            break
-    if allPlaced:
-        network.send("done")
+
+
+
 
     # Any mouse movement
     if len(grid.keys()) != 0:
@@ -317,7 +323,7 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc, network):
         ship_group_layered.draw(screen)
         pygame.display.update()
 
-    return placing, run, grid, curSprite, shipLoc
+    return placing, run, grid, curSprite, shipLoc,screenN
 
 
 def takeShotScreen(run, grid, clicked, network):
@@ -409,8 +415,8 @@ if __name__ == "__main__":
     while running:
         #  Placing ships
         if screenName == "Placing Ships":
-            canPlace, running, gridCord, currentSprite, shipPos = moveShipScreen(
-                canPlace, running, gridCord, currentSprite, shipPos, n)
+            canPlace, running, gridCord, currentSprite, shipPos,screenName = moveShipScreen(
+                canPlace, running, gridCord, currentSprite, shipPos, n,screenName)
             # if player == 0:
             #     n.send("send")
             # elif player == 1:

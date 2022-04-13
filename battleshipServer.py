@@ -4,6 +4,7 @@ import sys
 import pickle
 from playerClass import Player
 import time
+import threading
 
 # Create worker threads
 # def create_workers():
@@ -17,14 +18,18 @@ def handle_client(connection, player):
     global whichTurn
     global intendedMsg
     # Sends player their player number
-    #connection.send(str(p).encode())
+    connection.send(str(p).encode())
     # At the beginning of the game, sets both players to placing ships
     connection.send('Placing Ships'.encode())
 
-    connection.recv(2048).decode()
-    while completeSetup[0] == '' or completeSeup[1] == '':
-        print('Waiting for both players to place ships')
+    completeSetup[player] = connection.recv(2048).decode()
+    while completeSetup[0] == '' or completeSetup[1] == '':
+        continue
     print('done')
+    if player == 0:
+        connection.send('Taking Shot'.encode())
+    else:
+        connection.send('Taking Shot'.encode())
 
     # while True:
     #     # if its this threads players turn
@@ -88,11 +93,14 @@ while True:
         # First connection is player 0 and second connection is player 1
         playersConnected.append(conn)
         playerAddress.append(addr)
-
+        t = threading.Thread(target=handle_client,args=(conn,p),daemon=True)
+        t.start()
         p += 1
-    else:
-        for connect in range(len(playersConnected)):
-            threads.append(threading.Thread(target=handle_client,args=(playersConnected[connect],connect),daemon=True))
-            threads[connect].start()
+    # else:
+    #     print(playersConnected)
+    #     for connect in range(1,len(playersConnected)):
+    #         print('in')
+    #         threads.append(threading.Thread(target=handle_client,args=(playersConnected[connect],connect),daemon=True))
+    #         threads[connect].start()
 
 
