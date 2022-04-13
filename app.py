@@ -3,6 +3,7 @@ import numpy as np
 import playerClass
 from battleshipNetwork import Network
 from spriteClasses import Hit_Miss, Sprite
+from ai import AI
 
 # import battleship
 # import battleshipNetwork
@@ -368,7 +369,7 @@ if __name__ == "__main__":
     pygame.display.set_caption("Battleship")  # set caption
     icon = pygame.image.load('images/battleship.png')  # set game icon
     pygame.display.set_icon(icon)
-    n = Network()
+    #n = Network()
    # player = n.getP()
     #print("you are player: ", player)
 
@@ -386,7 +387,12 @@ if __name__ == "__main__":
     hit_miss_group_layered = pygame.sprite.LayeredUpdates([])
 
     # create players
+    ai = False
     # P1 = playerClass.Player(1)
+    if ai:
+        P2 = AI.Player(2)
+    else:
+        ai = False
     # P2 = playerClass.Player(2)
 
     running = True
