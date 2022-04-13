@@ -276,12 +276,11 @@ def shipIsHeld(position, sprite):
     pygame.display.update()
 
 
-def moveShipScreen(placing, run, grid, curSprite, shipLoc):
+def moveShipScreen(placing, run, grid, curSprite, shipLoc, network):
     pos = pygame.mouse.get_pos()
     if placing:
         shipIsHeld(pos, curSprite)
         allowToPlace, shipLoc = shipHighlight(pos, grid, curSprite, shipLoc)
-
 
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
@@ -296,6 +295,15 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc):
             curSprite = placingShips(pos)
             if curSprite is not None:
                 placing = True
+
+    allPlaced = True
+    for x in shipLoc:
+        temp = shipLoc[x]
+        if  temp[0] == -1 or temp[1] == -1:
+            allPlaced = False
+            break
+    if allPlaced:
+        network.send("done")
 
     # Any mouse movement
     if len(grid.keys()) != 0:
@@ -312,7 +320,7 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc):
     return placing, run, grid, curSprite, shipLoc
 
 
-def takeShotScreen(run, grid, clicked):
+def takeShotScreen(run, grid, clicked, network):
     is_hit = True
     pos = pygame.mouse.get_pos()
 
@@ -358,9 +366,6 @@ def takeShotScreen(run, grid, clicked):
     return run, grid, clicked
 
 
-
-
-
 if __name__ == "__main__":
     pygame.init()  # initialize pygame
     screen = pygame.display.set_mode(
@@ -369,12 +374,12 @@ if __name__ == "__main__":
     icon = pygame.image.load('images/battleship.png')  # set game icon
     pygame.display.set_icon(icon)
     n = Network()
-    #n.send("Check")
+    # n.send("Check")
     player = n.getP()
     print("you are player: ", player)
     screenName = n.receive()
     print(screenName)
-    n.send("Test")
+    #n.send("Test")
 
     # create ship objects
     img_X = SCREEN_WIDTH * .65
@@ -398,18 +403,20 @@ if __name__ == "__main__":
     gridCord = {}  # Indicates the row rectangle coordinates and stores the column coordinates within the key
     currentSprite = None
     click = False
-    #screenName = "Placing Ships"
+    # screenName = "Placing Ships"
     shipPos = {corvette: [-1, -1], sub: [-1, -1],
                destroyer: [-1, -1], carrier: [-1, -1]}
     while running:
         #  Placing ships
         if screenName == "Placing Ships":
             canPlace, running, gridCord, currentSprite, shipPos = moveShipScreen(
-                canPlace, running, gridCord, currentSprite, shipPos)
+                canPlace, running, gridCord, currentSprite, shipPos, n)
             # if player == 0:
             #     n.send("send")
             # elif player == 1:
             #     n.send("receive")
 
         elif screenName == "Taking Shot":
-            running, gridCord, click = takeShotScreen(running, gridCord, click)
+            running, gridCord, click = takeShotScreen(running, gridCord, click, n)
+
+        #screenName = n.receive()

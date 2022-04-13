@@ -3,6 +3,51 @@ from _thread import *
 import sys
 import pickle
 from playerClass import Player
+import time
+
+# Create worker threads
+# def create_workers():
+completeSetup = ['', '']
+whichTurn = 0
+intendedMsg = ''
+
+
+def handle_client(connection, player):
+    global completeSetup
+    global whichTurn
+    global intendedMsg
+    # Sends player their player number
+    #connection.send(str(p).encode())
+    # At the beginning of the game, sets both players to placing ships
+    connection.send('Placing Ships'.encode())
+
+    connection.recv(2048).decode()
+    while completeSetup[0] == '' or completeSeup[1] == '':
+        print('Waiting for both players to place ships')
+    print('done')
+
+    # while True:
+    #     # if its this threads players turn
+    #     if whichTurn == player:
+    #         # Waits to see what move the player is going to take
+    #         data = conn.recv(2048).decode()
+    #         # Gives value to global variable allowing other thread to see
+    #         intendedMsg = data
+    #         time.sleep(1)   # Gives other thread chance to see message first
+    #     else:
+    #         if intendedMsg != '':
+    #             # Sends message from other thread to app
+    #             connection.send(intendedMsg).encode()
+    #             # Resets the message so that other thread waits for move
+    #             intendedMsg = ''
+    #             # Switches player turn
+    #             if whichTurn == 0:
+    #                 whichTurn = 1
+    #             else:
+    #                 whichTurn = 0
+
+
+
 
 server = ''
 port = 5555
@@ -28,27 +73,26 @@ except socket.error as e:
 s.listen(2)
 print("Server started")
 
-
 p = 0
 twoConnected = False
 playerTurn = 0
 playersConnected = []
-
+playerAddress = []
+iniSetup = True
+threads = []
 
 while True:
-    if not twoConnected:
+    if len(playersConnected) < 2:
         conn, addr = s.accept()
         print("Connected to:", addr)
         # First connection is player 0 and second connection is player 1
         playersConnected.append(conn)
-        conn.send(str(p).encode())
+        playerAddress.append(addr)
+
         p += 1
-        if p == 2:
-            twoConnected = True
     else:
-        if playerTurn == 0:
-            playersConnected[0].send('Taking Shot'.encode())
-            playersConnected[1].send('Placing Ships'.encode())
-            print(playersConnected[0].recv(2048).decode())
+        for connect in range(len(playersConnected)):
+            threads.append(threading.Thread(target=handle_client,args=(playersConnected[connect],connect),daemon=True))
+            threads[connect].start()
 
 

@@ -13,6 +13,8 @@ class Network:
         for i in self.server:
             if i[0]+i[1]+i[2] == '127':     # Checks to see whether IP is a loopback address
                 continue
+            elif i[0] + i[1] != '10':
+                continue
             else:
                 self.server = i
                 break
