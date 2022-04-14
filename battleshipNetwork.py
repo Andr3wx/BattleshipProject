@@ -44,13 +44,11 @@ class Network:
         except socket.error as e:
             print(e)
 
-    def receive(self, block=True):
+    def receive(self):
         try:
-            if block:
-                msg = self.client.recv(2048).decode()
-                return msg
-            else:
-                msg = self.client.recv(2048).decode()
-                return msg
+
+            msg = self.client.recv(2048).decode()
+            return msg
+
         except socket.error as e:
             print(e)

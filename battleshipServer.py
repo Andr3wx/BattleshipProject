@@ -27,29 +27,29 @@ def handle_client(connection, player):
         continue
     print('done')
     if player == 0:
-        connection.send('Taking Shot'.encode())
+        connection.send('Other Player'.encode())
     else:
-        connection.send('Taking Shot'.encode())
+        connection.send('Other Player'.encode())
 
-    # while True:
-    #     # if its this threads players turn
-    #     if whichTurn == player:
-    #         # Waits to see what move the player is going to take
-    #         data = conn.recv(2048).decode()
-    #         # Gives value to global variable allowing other thread to see
-    #         intendedMsg = data
-    #         time.sleep(1)   # Gives other thread chance to see message first
-    #     else:
-    #         if intendedMsg != '':
-    #             # Sends message from other thread to app
-    #             connection.send(intendedMsg).encode()
-    #             # Resets the message so that other thread waits for move
-    #             intendedMsg = ''
-    #             # Switches player turn
-    #             if whichTurn == 0:
-    #                 whichTurn = 1
-    #             else:
-    #                 whichTurn = 0
+    while True:
+        # if its this threads players turn
+        if whichTurn == player:
+            # Waits to see what move the player is going to take
+            data = conn.recv(2048).decode()
+            # Gives value to global variable allowing other thread to see
+            intendedMsg = data
+            time.sleep(1)   # Gives other thread chance to see message first
+        else:
+            if intendedMsg != '':
+                # Sends message from other thread to app
+                connection.send(intendedMsg.encode())
+                # Resets the message so that other thread waits for move
+                intendedMsg = ''
+                # Switches player turn
+                if whichTurn == 0:
+                    whichTurn = 1
+                else:
+                    whichTurn = 0
 
 
 
