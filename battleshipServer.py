@@ -38,15 +38,16 @@ def handle_client(connection, player):
         # if its this threads players turn
         if whichTurn == player:
             # Waits to see what move the player is going to take
-            data = conn.recv(2048).decode()
+            data = connection.recv(2048).decode()
             # Gives value to global variable allowing other thread to see
             intendedMsg = data
             time.sleep(1)   # Gives other thread chance to see message first
         else:
             if intendedMsg != '':
                 # Sends message from other thread to app
+                print(intendedMsg)
                 connection.send(intendedMsg.encode())
-                time.sleep(1)
+                #time.sleep(1)
                 # Resets the message so that other thread waits for move
                 intendedMsg = ''
                 # Switches player turn
