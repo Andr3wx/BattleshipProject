@@ -292,7 +292,7 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN):
             break
     if allPlaced and not placing:
         network.send("done")
-        time.sleep(1)
+        #time.sleep(1)
         screenN = network.receive()
         return placing, run, grid, curSprite, shipLoc, screenN
         # print(screenN)
@@ -378,27 +378,27 @@ def otherPlayerTurnScreen(screenN,shipLoc,network,gridLoc,run):
     drawGrid()
     ship_group_layered.draw(screen)
     pygame.display.update()
-    getShot = network.receive()
-    print(getShot)
-    getShot.split(',')
-    shotSpot = []
-    shotSpot.append(float(getShot[0]))
-    shotSpot.append(float(getShot[1]))
-    rect = pygame.Rect(shotSpot[0], shotSpot[1], block(), block())
-    pygame.draw.rect(screen, color, rect)  # Highlights given box
-    pygame.draw.rect(screen, black, rect, 1)
-    #time.sleep(5)
-    screenN = 'Taking Shot'
-
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:  # press ESC to quit
                 run = False
-    # counter += 1
-    # if counter == 20:
-    #     screenN = 'Placing Ships'
+    getShot = network.receive()
+    print(getShot)
+    getShot = getShot.split(',')
+    shotSpot = []
+    shotSpot.append(float(getShot[0]))
+    shotSpot.append(float(getShot[1]))
+    rect = pygame.Rect(shotSpot[0], shotSpot[1], block(), block())
+    pygame.draw.rect(screen, red, rect)  # Highlights given box
+    pygame.draw.rect(screen, black, rect, 1)
+    pygame.display.update()
+    time.sleep(5)
+    screenN = 'Taking Shot'
+
+
+
     return screenN, run
-    # ship_group_layered.draw(screen)
+
 
 
 if __name__ == "__main__":
