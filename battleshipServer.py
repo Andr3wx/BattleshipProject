@@ -19,6 +19,7 @@ def handle_client(connection, player):
     global intendedMsg
     # Sends player their player number
     connection.send(str(p).encode())
+    time.sleep(1)
     # At the beginning of the game, sets both players to placing ships
     connection.send('Placing Ships'.encode())
 
@@ -27,9 +28,11 @@ def handle_client(connection, player):
         continue
     print('done')
     if player == 0:
-        connection.send('Other Player'.encode())
+        connection.send('Taking Shot'.encode())
+        time.sleep(1)
     else:
         connection.send('Other Player'.encode())
+        time.sleep(1)
 
     while True:
         # if its this threads players turn
@@ -43,6 +46,7 @@ def handle_client(connection, player):
             if intendedMsg != '':
                 # Sends message from other thread to app
                 connection.send(intendedMsg.encode())
+                time.sleep(1)
                 # Resets the message so that other thread waits for move
                 intendedMsg = ''
                 # Switches player turn
