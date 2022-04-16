@@ -277,7 +277,7 @@ def shipIsHeld(position, sprite):
     pygame.display.update()
 
 
-def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN):
+def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN, otherPlayerShips):
     pos = pygame.mouse.get_pos()
     if placing:
         shipIsHeld(pos, curSprite)
@@ -291,10 +291,11 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN):
             allPlaced = False
             break
     if allPlaced and not placing:
-        network.send("done")
+        network.send(convertShipToStr(shipLoc))
         #time.sleep(1)
         screenN = network.receive()
-        return placing, run, grid, curSprite, shipLoc, screenN
+        otherPlayerShips = convertStrToShip(network.receive())
+        return placing, run, grid, curSprite, shipLoc, screenN,otherPlayerShips
         # print(screenN)
 
     for event in pygame.event.get():
@@ -323,10 +324,10 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN):
         ship_group_layered.draw(screen)
         pygame.display.update()
 
-    return placing, run, grid, curSprite, shipLoc, screenN
+    return placing, run, grid, curSprite, shipLoc, screenN,otherPlayerShips
 
 
-def takeShotScreen(run, grid, clicked, network, screenN):
+def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips):
     is_hit = True
     pos = pygame.mouse.get_pos()
 
@@ -337,6 +338,7 @@ def takeShotScreen(run, grid, clicked, network, screenN):
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if checkIfGrid(pos, grid)[0] != -1 and checkIfGrid(pos, grid)[1] != -1:
                 exactSpot = str(getRectCoord(pos, grid)[0]) + ',' + str(getRectCoord(pos, grid)[1])
+                is_hit = checkIfHitOther(otherPlayerShips,getRectCoord(pos,grid))
                 network.send(exactSpot)
                 #   screenN = #! Set to idle screen
             # send to other player to see if hit or miss
@@ -399,6 +401,57 @@ def otherPlayerTurnScreen(screenN,shipLoc,network,gridLoc,run):
 
     return screenN, run
 
+def convertShipToStr(shipLoc):
+    toString = ""
+    for x in shipLoc:
+        toString += str(x)
+        toString += '/'
+        temp = shipLoc[x]
+        toString += str(temp[0])
+        toString += '/'
+        toString += str(temp[1])
+        toString += '/'
+    return toString
+
+def convertStrToShip(strShips):
+    otherPlayer = {}
+    listShips = strShips.split('/')
+    count = 0
+    for x in listShips:
+        if counter == 0:
+            otherPlayer[x] = []
+            count += 1
+        elif counter == 1:
+            otherPlayer[x].append(float(x))
+            count += 1
+        elif counter == 2:
+            otherPlayer[x].append(float(x))
+            count = 0
+    return otherPlayer
+
+# Parameter is the other player ship location dict
+def checkIfHitOther(shipDic, shotPos):
+    for x in shipDic:
+        temp = shipDic[x]
+        # If y coordinates are the same for ship location and shot location
+        if temp[1] == shotPos[1]:
+            if x == 'corvette':
+                if temp[0] <= shotPos[0] <= temp[0] + ( 2*block() ):
+                    return True
+            elif x == 'sub':
+                if temp[0] <= shotPos[0] <= temp[0] + ( 3*block() ):
+                    return True
+            elif x == 'destroyer':
+                if temp[0] <= shotPos[0] <= temp[0] + ( 4*block() ):
+                    return True
+            elif x == 'carrier':
+                if temp[0] <= shotPos[0] <= temp[0] + (5*block() ):
+                    return True
+    return False
+
+
+
+
 
 
 if __name__ == "__main__":
@@ -441,14 +494,15 @@ if __name__ == "__main__":
     # screenName = "Placing Ships"
     shipPos = {corvette: [-1, -1], sub: [-1, -1],
                destroyer: [-1, -1], carrier: [-1, -1]}
+    opposingShipPos = {}
     while running:
         #  Placing ships
         if screenName == "Placing Ships":
-            canPlace, running, gridCord, currentSprite, shipPos, screenName = moveShipScreen(
-                canPlace, running, gridCord, currentSprite, shipPos, n, screenName)
+            canPlace, running, gridCord, currentSprite, shipPos, screenName,opposingShipPos = moveShipScreen(
+                canPlace, running, gridCord, currentSprite, shipPos, n, screenName, opposingShipPos)
 
         elif screenName == "Taking Shot":
-            running, gridCord, click, screenName = takeShotScreen(running, gridCord, click, n, screenName)
+            running, gridCord, click, screenName = takeShotScreen(running, gridCord, click, n, screenName, opposingShipPos)
 
         elif screenName == "Other Player":
             screenName, running = otherPlayerTurnScreen(screenName,shipPos,n,gridCord, running)
