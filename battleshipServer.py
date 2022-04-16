@@ -3,15 +3,84 @@ from _thread import *
 import sys
 import pickle
 from playerClass import Player
+import time
+import threading
+
+# Create worker threads
+# def create_workers():
+completeSetup = ['', '']
+whichTurn = 0
+intendedMsg = ''
+
+
+def handle_client(connection, player):
+    global completeSetup
+    global whichTurn
+    global intendedMsg
+    # Sends player their player number
+    connection.send(str(p).encode())
+    time.sleep(1)
+    # At the beginning of the game, sets both players to placing ships
+    connection.send('Placing Ships'.encode())
+   # time.sleep(5)
+    completeSetup[player] = connection.recv(2048).decode()
+    while completeSetup[0] == '' or completeSetup[1] == '':
+        continue
+    print('done')
+    if player == 0:
+        connection.send('Taking Shot'.encode())
+        print(completeSetup[1])
+        time.sleep(1)
+        connection.send(completeSetup[1].encode())
+        time.sleep(1)
+    else:
+        connection.send('Other Player'.encode())
+        time.sleep(1)
+        print(completeSetup[0])
+        connection.send(completeSetup[0].encode())
+        time.sleep(1)
+
+    while True:
+        # if its this threads players turn
+        if whichTurn == player:
+            # Waits to see what move the player is going to take
+            data = connection.recv(2048).decode()
+            # Gives value to global variable allowing other thread to see
+            intendedMsg = data
+            time.sleep(1)   # Gives other thread chance to see message first
+        else:
+            if intendedMsg != '':
+                # Sends message from other thread to app
+                print(intendedMsg)
+                connection.send(intendedMsg.encode())
+                # time.sleep(1)
+                # Resets the message so that other thread waits for move
+                intendedMsg = ''
+                # Switches player turn
+                if whichTurn == 0:
+                    whichTurn = 1
+                else:
+                    whichTurn = 0
+
 
 server = ''
 port = 5555
 global idCount
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server = socket.gethostbyname_ex(socket.gethostname())[-1]
 
+for i in server:
+    if i[0] + i[1] + i[2] == '127':  # Checks to see whether IP is a loopback address
+        continue
+    elif i[0]+i[1]+i[2] == '192':
+        continue
+    else:
+        server = i
+        break
+print(server)
 try:
-    s.bind(('0.0.0.0', port))
+    s.bind((server, port))
 
     print("yes")
 except socket.error as e:
@@ -19,65 +88,28 @@ except socket.error as e:
 
 s.listen(2)
 print("Server started")
+
+p = 0
+twoConnected = False
+playerTurn = 0
+playersConnected = []
+playerAddress = []
+iniSetup = True
+threads = []
+
 while True:
-    print("in")
-    (conn, addr) = s.accept()
-    print(conn)
-    print(addr)
-
-connected = set()
-games = {}
-idCount = 0
-
-# def threaded_client(conn, p, gameID):
-#
-#     conn.send(str.encode(str(p)))
-#
-#     reply = ""
-#     while True:
-#         try:
-#
-#             data = conn.recv(4096).decode()
-#
-#             if gameID in games:
-#                 game = games[gameID]
-#
-#                 if not data:
-#                     break
-#                 else:
-#
-#                     if data != "get":
-#                         # if the data being recieved is a move
-#
-#                         reply = game
-#                         conn.sendall(pickle.dumps(reply))
-#                     elif data == "win" or data == "lose":
-#                         game.reset()
-#             else:
-#                 break
-#         except:
-#             break
-#     print("lost connection")
-#     print("closing game", gameID)
-#     try:
-#         del games[gameID]
-#     except:
-#         pass
-#     idCount -= 1
-#     conn.close()
-#
-#
-# while True:
-#     conn, addr = s.accept()
-#     print("Connected to:", addr)
-#
-#     idCount += 1
-#     p = 0
-#     gameID = (idCount - 1) // 2
-#     if idCount % 2 == 1:
-#         games[gameID] = Player(gameID)
-#         print("creating a new game")
-#     else:
-#         games[gameID].ready = True
-#         p = 1
-#     start_new_thread(threaded_client, (conn, p, gameID))
+    if len(playersConnected) < 2:
+        conn, addr = s.accept()
+        print("Connected to:", addr)
+        # First connection is player 0 and second connection is player 1
+        playersConnected.append(conn)
+        playerAddress.append(addr)
+        t = threading.Thread(target=handle_client, args=(conn, p), daemon=True)
+        t.start()
+        p += 1
+    # else:
+    #     print(playersConnected)
+    #     for connect in range(1,len(playersConnected)):
+    #         print('in')
+    #         threads.append(threading.Thread(target=handle_client,args=(playersConnected[connect],connect),daemon=True))
+    #         threads[connect].start()
