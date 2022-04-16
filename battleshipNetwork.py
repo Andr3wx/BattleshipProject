@@ -14,6 +14,8 @@ class Network:
         for i in self.server:
             if i[0]+i[1]+i[2] == '127':     # Checks to see whether IP is a loopback address
                 continue
+            elif i[0]+i[1]+i[2] == '192':
+                continue
             elif i[0] + i[1] != '10':
                 continue
             else:
@@ -26,8 +28,7 @@ class Network:
         self.addr = (self.server, self.port)
         self.client.connect(self.addr)
         self.p = self.client.recv(2048).decode()
-        #print(self.p)
-
+        # print(self.p)
 
     def getP(self):
         return self.p
@@ -39,19 +40,40 @@ class Network:
         except:
             pass
 
-    def send(self, data):
-        try:
-            self.client.send(data.encode())
-            time.sleep(1)
-            #return self.client.recv(2048).decode()
-        except socket.error as e:
-            print(e)
+    def send(self, data, isPickle=False):
+        if not pickle:
+            try:
+                self.client.send(data.encode())
+                time.sleep(1)
+                # return self.client.recv(2048).decode()
 
-    def receive(self):
-        try:
-            time.sleep(1)
-            msg = self.client.recv(2048).decode()
-            return msg
+            except socket.error as e:
+                print(e)
+        else:
+            try:
+                self.client.send(pickle.dumps(data))
+                time.sleep(1)
+                # return self.client.recv(2048).decode()
 
-        except socket.error as e:
-            print(e)
+            except socket.error as e:
+                print(e)
+
+    def receive(self, isPickle=False):
+
+        if not pickle:
+            try:
+                time.sleep(1)
+                msg = self.client.recv(2048).decode()
+                return msg
+
+            except socket.error as e:
+                print(e)
+        else:
+            try:
+                time.sleep(1)
+                grid = pickle.loads(self.client.recv(2048)).decode()
+                return grid
+                # return self.client.recv(2048).decode()
+
+            except socket.error as e:
+                print(e)

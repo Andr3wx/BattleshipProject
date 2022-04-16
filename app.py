@@ -340,6 +340,7 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips):
                 exactSpot = str(getRectCoord(pos, grid)[0]) + ',' + str(getRectCoord(pos, grid)[1])
                 is_hit = checkIfHitOther(otherPlayerShips,getRectCoord(pos,grid))
                 network.send(exactSpot)
+
                 #   screenN = #! Set to idle screen
             # send to other player to see if hit or miss
 
@@ -376,7 +377,7 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips):
     return run, grid, clicked, screenN
 
 
-def otherPlayerTurnScreen(screenN,shipLoc,network,gridLoc,run):
+def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run):
     drawGrid()
     ship_group_layered.draw(screen)
     pygame.display.update()
@@ -390,6 +391,7 @@ def otherPlayerTurnScreen(screenN,shipLoc,network,gridLoc,run):
     shotSpot = []
     shotSpot.append(float(getShot[0]))
     shotSpot.append(float(getShot[1]))
+    print(shotSpot[0], "     ", shotSpot[1])
     rect = pygame.Rect(shotSpot[0], shotSpot[1], block(), block())
     pygame.draw.rect(screen, red, rect)  # Highlights given box
     pygame.draw.rect(screen, black, rect, 1)
@@ -397,8 +399,9 @@ def otherPlayerTurnScreen(screenN,shipLoc,network,gridLoc,run):
     time.sleep(5)
     screenN = 'Taking Shot'
 
-
-
+    # counter += 1
+    # if counter == 20:
+    #     screenN = 'Placing Ships'
     return screenN, run
 
 def convertShipToStr(shipLoc):
@@ -453,7 +456,6 @@ def checkIfHitOther(shipDic, shotPos):
 
 
 
-
 if __name__ == "__main__":
     pygame.init()  # initialize pygame
     screen = pygame.display.set_mode(
@@ -466,6 +468,7 @@ if __name__ == "__main__":
     player = n.getP()
     print("you are player: ", player)
     screenName = n.receive()
+
     print(screenName)
     # n.send("Test")
 
@@ -505,6 +508,7 @@ if __name__ == "__main__":
             running, gridCord, click, screenName = takeShotScreen(running, gridCord, click, n, screenName, opposingShipPos)
 
         elif screenName == "Other Player":
-            screenName, running = otherPlayerTurnScreen(screenName,shipPos,n,gridCord, running)
+            screenName, running = otherPlayerTurnScreen(
+                screenName, shipPos, n, gridCord, running)
 
         # screenName = n.receive()
