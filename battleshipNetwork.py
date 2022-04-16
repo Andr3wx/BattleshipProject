@@ -21,7 +21,7 @@ class Network:
             else:
                 self.server = i
                 break
-        self.server = '172.22.5.117'
+        self.server = '172.22.14.83'
         print(socket.gethostbyname_ex(socket.gethostname()))
         print(self.server)
         self.port = 5555
@@ -40,40 +40,37 @@ class Network:
         except:
             pass
 
-    def send(self, data, isPickle=False):
-        if not pickle:
-            try:
-                self.client.send(data.encode())
-                time.sleep(1)
-                # return self.client.recv(2048).decode()
+    def send(self, data):
+        try:
+            self.client.send(data.encode())
+            time.sleep(1)
+            # return self.client.recv(2048).decode()
 
-            except socket.error as e:
-                print(e)
-        else:
-            try:
-                self.client.send(pickle.dumps(data))
-                time.sleep(1)
-                # return self.client.recv(2048).decode()
+        except socket.error as e:
+            print(e)
+        # else:
+        #     try:
+        #         self.client.send(pickle.dumps(data))
+        #         time.sleep(1)
+        #         # return self.client.recv(2048).decode()
+        #
+        #     except socket.error as e:
+        #         print(e)
 
-            except socket.error as e:
-                print(e)
+    def receive(self):
 
-    def receive(self, isPickle=False):
+        try:
+            msg = self.client.recv(2048).decode()
+            return msg
 
-        if not pickle:
-            try:
-                time.sleep(1)
-                msg = self.client.recv(2048).decode()
-                return msg
-
-            except socket.error as e:
-                print(e)
-        else:
-            try:
-                time.sleep(1)
-                grid = pickle.loads(self.client.recv(2048)).decode()
-                return grid
-                # return self.client.recv(2048).decode()
-
-            except socket.error as e:
-                print(e)
+        except socket.error as e:
+            print(e)
+        # else:
+        #     try:
+        #         time.sleep(1)
+        #         grid = pickle.loads(self.client.recv(2048)).decode()
+        #         return grid
+        #         # return self.client.recv(2048).decode()
+        #
+        #     except socket.error as e:
+        #         print(e)

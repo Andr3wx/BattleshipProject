@@ -407,7 +407,15 @@ def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run):
 def convertShipToStr(shipLoc):
     toString = ""
     for x in shipLoc:
-        toString += str(x)
+        if x == 'carrier'
+            toString += 'carrier'
+        elif x == 'sub':
+            toString += 'sub'
+        elif x == 'destroyer':
+            toString += 'destroyer'
+        elif x == 'carrier':
+            toString += 'carrier'
+
         toString += '/'
         temp = shipLoc[x]
         toString += str(temp[0])
@@ -425,10 +433,12 @@ def convertStrToShip(strShips):
             otherPlayer[x] = []
             count += 1
         elif counter == 1:
-            otherPlayer[x].append(float(x))
+            cord = x.split(',')
+            otherPlayer[x].append([float(cord[0]),float(cord[1])])
             count += 1
         elif counter == 2:
-            otherPlayer[x].append(float(x))
+            cord = x.split(',')
+            otherPlayer[x].append([float(cord[0]),float(cord[1])])
             count = 0
     return otherPlayer
 
@@ -436,19 +446,21 @@ def convertStrToShip(strShips):
 def checkIfHitOther(shipDic, shotPos):
     for x in shipDic:
         temp = shipDic[x]
+        temp1 = temp[0] # Beginning ship cordinates
+        temp2 = temp[1] # End ships cordinates
         # If y coordinates are the same for ship location and shot location
-        if temp[1] == shotPos[1]:
+        if temp1[1] == shotPos[1]:
             if x == 'corvette':
-                if temp[0] <= shotPos[0] <= temp[0] + ( 2*block() ):
+                if temp1[0] <= shotPos[0] <= temp2[0]:
                     return True
             elif x == 'sub':
-                if temp[0] <= shotPos[0] <= temp[0] + ( 3*block() ):
+                if temp1[0] <= shotPos[0] <= temp2[0]:
                     return True
             elif x == 'destroyer':
-                if temp[0] <= shotPos[0] <= temp[0] + ( 4*block() ):
+                if temp1[0] <= shotPos[0] <= temp2[0]:
                     return True
             elif x == 'carrier':
-                if temp[0] <= shotPos[0] <= temp[0] + (5*block() ):
+                if temp1[0] <= shotPos[0] <= temp2[0]:
                     return True
     return False
 
