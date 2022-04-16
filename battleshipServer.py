@@ -47,7 +47,7 @@ def handle_client(connection, player):
                 # Sends message from other thread to app
                 print(intendedMsg)
                 connection.send(intendedMsg.encode())
-                #time.sleep(1)
+                # time.sleep(1)
                 # Resets the message so that other thread waits for move
                 intendedMsg = ''
                 # Switches player turn
@@ -55,8 +55,6 @@ def handle_client(connection, player):
                     whichTurn = 1
                 else:
                     whichTurn = 0
-
-
 
 
 server = ''
@@ -68,6 +66,8 @@ server = socket.gethostbyname_ex(socket.gethostname())[-1]
 
 for i in server:
     if i[0] + i[1] + i[2] == '127':  # Checks to see whether IP is a loopback address
+        continue
+    elif i[0]+i[1]+i[2] == '192':
         continue
     else:
         server = i
@@ -98,7 +98,7 @@ while True:
         # First connection is player 0 and second connection is player 1
         playersConnected.append(conn)
         playerAddress.append(addr)
-        t = threading.Thread(target=handle_client,args=(conn,p),daemon=True)
+        t = threading.Thread(target=handle_client, args=(conn, p), daemon=True)
         t.start()
         p += 1
     # else:
@@ -107,5 +107,3 @@ while True:
     #         print('in')
     #         threads.append(threading.Thread(target=handle_client,args=(playersConnected[connect],connect),daemon=True))
     #         threads[connect].start()
-
-
