@@ -229,6 +229,17 @@ def shipHighlight(position, locationGrid, ship, shipLoc):
         shipLoc[ship] = [-1, -1]
         return False, shipLoc
     shipLoc[ship] = recLoc
+    tempCord = ship[sub]
+    endCord = tempCord[1]
+    if ship == sub:
+        endCord[0] = endCord[0] + block()
+    elif ship == destroyer:
+        endCord[0] = endCord[0] + (2*block())
+    elif ship == carrier:
+        endCord[0] = endCord[0] + (3*block())
+    tempCord[1] = endCord
+    shipLoc[ship] = tempCord
+
     return True, shipLoc
 
 
@@ -372,14 +383,15 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips):
     if len(grid.keys()) != 0 and not clicked:
         mouseHighlight(pos, grid, False)
 
-    # RGB background
-    screen.fill(black)
-    if len(grid.keys()) <= 0:
-        grid = drawGrid()
-        pygame.display.update()
 
     if screenN == 'Other Player':
-        time.sleep(5)
+         time.sleep(3)
+
+    # RGB background
+    screen.fill(black)
+    grid = drawGrid()
+    pygame.display.update()
+
 
     return run, grid, clicked, screenN
 
@@ -403,8 +415,9 @@ def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run):
     pygame.draw.rect(screen, red, rect)  # Highlights given box
     pygame.draw.rect(screen, black, rect, 1)
     pygame.display.update()
-    time.sleep(5)
+    time.sleep(3)
     screenN = 'Taking Shot'
+    print(screenN)
 
     # counter += 1
     # if counter == 20:
