@@ -3,7 +3,7 @@ import numpy as np
 import playerClass
 from battleshipNetwork import Network
 from spriteClasses import Hit_Miss, Sprite
-from ai import AI
+#from ai import AI
 import time
 
 # import battleship
@@ -342,7 +342,7 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN, oth
     return placing, run, grid, curSprite, shipLoc, screenN, otherPlayerShips
 
 
-def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips):
+def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWinCount):
     is_hit = True
     pos = pygame.mouse.get_pos()
 
@@ -352,8 +352,10 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips):
                 run = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if checkIfGrid(pos, grid)[0] != -1 and checkIfGrid(pos, grid)[1] != -1:
-                exactSpot = str(getRectCoord(pos, grid)[0]) + ',' + str(getRectCoord(pos, grid)[1])
-                is_hit = checkIfHitOther(otherPlayerShips, getRectCoord(pos, grid))
+                exactSpot = str(getRectCoord(pos, grid)[
+                                0]) + ',' + str(getRectCoord(pos, grid)[1])
+                is_hit = checkIfHitOther(
+                    otherPlayerShips, getRectCoord(pos, grid))
                 network.send(exactSpot)
                 screenN = 'Other Player'
 
@@ -363,6 +365,10 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips):
             if is_hit:
                 drawGrid()
                 hit = Hit_Miss("hit")
+                hitWinCount += 1
+                if checkIfMultWin(hitWinCount) == True:
+                    print("Player: ", network.getP(), " Wins!")
+                    run = False
                 positionHit = getRectCoord(pos, grid)
                 hit.set_location(positionHit)
                 hit_miss_group_layered.add(hit)
@@ -384,9 +390,8 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips):
     if len(grid.keys()) != 0 and not clicked:
         mouseHighlight(pos, grid, False)
 
-
     if screenN == 'Other Player':
-         time.sleep(3)
+        time.sleep(3)
 
     # RGB background
     screen.fill(black)
@@ -394,8 +399,7 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips):
     hit_miss_group_layered.draw(screen)
     pygame.display.update()
 
-
-    return run, grid, clicked, screenN
+    return run, grid, clicked, screenN, hitWinCount
 
 
 def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run):
@@ -459,11 +463,13 @@ def convertStrToShip(strShips):
             count += 1
         elif count == 1:
             cord = x.split(',')
-            otherPlayer[tempKey].append([float(cord[0][1:]), float(cord[1][:-1])])
+            otherPlayer[tempKey].append(
+                [float(cord[0][1:]), float(cord[1][:-1])])
             count += 1
         elif count == 2:
             cord = x.split(',')
-            otherPlayer[tempKey].append([float(cord[0][1:]), float(cord[1][:-1])])
+            otherPlayer[tempKey].append(
+                [float(cord[0][1:]), float(cord[1][:-1])])
             count = 0
     return otherPlayer
 
@@ -491,6 +497,13 @@ def checkIfHitOther(shipDic, shotPos):
                     if temp1[0] <= shotPos[0] <= temp2[0]:
                         return True
     return False
+
+
+def checkIfMultWin(hitCount):
+    if hitCount == 14:
+        return True
+    else:
+        return False
 
 
 if __name__ == "__main__":
@@ -536,6 +549,7 @@ if __name__ == "__main__":
     gridCord = {}  # Indicates the row rectangle coordinates and stores the column coordinates within the key
     currentSprite = None
     click = False
+    hitCount = 0
     # screenName = "Placing Ships"
     shipPos = {corvette: [-1, -1], sub: [-1, -1],
                destroyer: [-1, -1], carrier: [-1, -1]}
@@ -547,8 +561,8 @@ if __name__ == "__main__":
                 canPlace, running, gridCord, currentSprite, shipPos, n, screenName, opposingShipPos)
 
         elif screenName == "Taking Shot":
-            running, gridCord, click, screenName = takeShotScreen(running, gridCord, click, n, screenName,
-                                                                  opposingShipPos)
+            running, gridCord, click, screenName, hitCount = takeShotScreen(running, gridCord, click, n, screenName,
+                                                                            opposingShipPos, hitCount)
 
         elif screenName == "Other Player":
             screenName, running = otherPlayerTurnScreen(
