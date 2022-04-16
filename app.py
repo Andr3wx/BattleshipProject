@@ -229,7 +229,7 @@ def shipHighlight(position, locationGrid, ship, shipLoc):
         shipLoc[ship] = [-1, -1]
         return False, shipLoc
     shipLoc[ship] = recLoc
-    tempCord = ship[sub]
+    tempCord = shipLoc[ship]
     endCord = tempCord[1]
     if ship == sub:
         endCord[0] = endCord[0] + block()
@@ -390,6 +390,7 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips):
     # RGB background
     screen.fill(black)
     grid = drawGrid()
+    hit_miss_group_layered.draw(screen)
     pygame.display.update()
 
 
