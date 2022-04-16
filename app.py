@@ -296,7 +296,7 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN):
         otherGrid = network.recieve(True)
         # time.sleep(1)
         screenN = network.receive()
-        return placing, run, grid, curSprite, shipLoc, screenN
+        return placing, run, grid, curSprite, shipLoc, screenN, otherGrid
         # print(screenN)
 
     for event in pygame.event.get():
@@ -404,7 +404,6 @@ def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run):
     # if counter == 20:
     #     screenN = 'Placing Ships'
     return screenN, run
-    # ship_group_layered.draw(screen)
 
 
 if __name__ == "__main__":
