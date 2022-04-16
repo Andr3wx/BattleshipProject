@@ -407,7 +407,7 @@ def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run):
 def convertShipToStr(shipLoc):
     toString = ""
     for x in shipLoc:
-        if x == 'carrier'
+        if x == 'carrier':
             toString += 'carrier'
         elif x == 'sub':
             toString += 'sub'
