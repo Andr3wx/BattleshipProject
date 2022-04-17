@@ -8,7 +8,7 @@ import time
 class Network:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client.settimeout(30)
+        self.client.settimeout(60)
         self.server = socket.gethostbyname_ex(socket.gethostname())[-1]
         # self.server = '172.22.1.177'
         for i in self.server:
@@ -21,7 +21,7 @@ class Network:
             else:
                 self.server = i
                 break
-        self.server = '172.22.5.117'
+        self.server = '172.22.8.21'
         print(socket.gethostbyname_ex(socket.gethostname()))
         print(self.server)
         self.port = 5555
