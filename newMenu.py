@@ -431,6 +431,12 @@ def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run):
     return screenN, run
 
 def mainMenu():
+    pygame.init()
+    res = (720,720)
+    screen = pygame.display.set_mode(res)
+ 
+    color = (255,255,255)   #white color
+    
     
     return screenN, run
 
