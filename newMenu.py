@@ -430,6 +430,10 @@ def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run):
     #     screenN = 'Placing Ships'
     return screenN, run
 
+def mainMenu():
+    
+    return screenN, run
+
 
 def convertShipToStr(shipLoc):
     toString = ""
