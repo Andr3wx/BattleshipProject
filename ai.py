@@ -4,19 +4,22 @@ from spriteClasses import Sprite
 import pygame
 
 class AI:
-    def __int__(self, id):
-        self.p1Went = False
-        self.p2Went = False
-        self.ready = False
-        self.id = id
-        self.moves = [None, None]
-        self.wins = [0, 0]
-        self.ties = 0
-        self.img_X = SCREEN_WIDTH * .65
-        self.corvette = Sprite('corvette', self.img_X, SCREEN_HEIGHT * .1)
-        self.sub = Sprite('sub', self.img_X, SCREEN_HEIGHT * .3)
-        self.destroyer = Sprite('destroyer', self.img_X, SCREEN_HEIGHT * .5)
-        self.carrier = Sprite('carrier', self.img_X, SCREEN_HEIGHT * .7)
+    def __int__(self, grid):
+        self.gridSpots = grid
+        self.shotsTaken = []
+        # self.p1Went = False
+        # self.p2Went = False
+        # self.ready = False
+        # self.id = id
+        # self.moves = [None, None]
+        # self.wins = [0, 0]
+        # self.ties = 0
+        # self.img_X = SCREEN_WIDTH * .65
+        # self.corvette = Sprite('corvette', self.img_X, SCREEN_HEIGHT * .1)
+        # self.sub = Sprite('sub', self.img_X, SCREEN_HEIGHT * .3)
+        # self.destroyer = Sprite('destroyer', self.img_X, SCREEN_HEIGHT * .5)
+        # self.carrier = Sprite('carrier', self.img_X, SCREEN_HEIGHT * .7)
+
 
         # Ship group
         self.ship_group_layered = pygame.sprite.LayeredUpdates(
