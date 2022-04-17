@@ -1,6 +1,5 @@
 import pygame
 import numpy as np
-import playerClass
 from battleshipNetwork import Network
 from spriteClasses import Hit_Miss, Sprite
 import ai
@@ -537,12 +536,12 @@ if __name__ == "__main__":
     hit_miss_group_layered = pygame.sprite.LayeredUpdates([])
 
     # create players
-    ai = False
+    is_ai = False
 
     if ai:
         Pai = ai.Player()
     else:
-        ai = False
+        is_ai = False
 
     counter = 0
     running = True
