@@ -3,7 +3,7 @@ import numpy as np
 import playerClass
 from battleshipNetwork import Network
 from spriteClasses import Hit_Miss, Sprite
-#from ai import AI
+import ai
 import time
 
 # import battleship
@@ -356,6 +356,7 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWi
                                 0]) + ',' + str(getRectCoord(pos, grid)[1])
                 is_hit = checkIfHitOther(
                     otherPlayerShips, getRectCoord(pos, grid))
+                Pai.set_hit(is_hit)
                 network.send(exactSpot)
                 screenN = 'Other Player'
 
@@ -480,8 +481,8 @@ def checkIfHitOther(shipDic, shotPos):
         temp = shipDic[x]
         print(temp)
         if len(temp) > 1:
-            temp1 = temp[0]     # Beginning ship cordinates
-            temp2 = temp[1]     # End ships cordinates
+            temp1 = temp[0]     # Beginning ship coordinates
+            temp2 = temp[1]     # End ships coordinates
             # If y coordinates are the same for ship location and shot location
             if temp1[1] == shotPos[1]:
                 if x == 'corvette':
@@ -537,12 +538,12 @@ if __name__ == "__main__":
 
     # create players
     ai = False
-    # P1 = playerClass.Player(1)
+
     if ai:
-        P2 = AI.Player(2)
+        Pai = ai.Player()
     else:
         ai = False
-    # P2 = playerClass.Player(2)
+
     counter = 0
     running = True
     canPlace = False  # Indicates whether player is in the process of choosing a ship position
@@ -559,12 +560,14 @@ if __name__ == "__main__":
         if screenName == "Placing Ships":
             canPlace, running, gridCord, currentSprite, shipPos, screenName, opposingShipPos = moveShipScreen(
                 canPlace, running, gridCord, currentSprite, shipPos, n, screenName, opposingShipPos)
+            Pai(gridCord)
 
         elif screenName == "Taking Shot":
             running, gridCord, click, screenName, hitCount = takeShotScreen(running, gridCord, click, n, screenName,
                                                                             opposingShipPos, hitCount)
-
         elif screenName == "Other Player":
+            if ai:
+                gridCord = Pai.make_decsion()
             screenName, running = otherPlayerTurnScreen(
                 screenName, shipPos, n, gridCord, running)
 

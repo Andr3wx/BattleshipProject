@@ -1,56 +1,48 @@
-from app import *
 import random
-from spriteClasses import Sprite
-import pygame
+from app import checkIfHitOther
 
-class AI:
-    def __int__(self, id):
-        self.p1Went = False
-        self.p2Went = False
-        self.ready = False
-        self.id = id
-        self.moves = [None, None]
-        self.wins = [0, 0]
-        self.ties = 0
-        self.img_X = SCREEN_WIDTH * .65
-        self.corvette = Sprite('corvette', self.img_X, SCREEN_HEIGHT * .1)
-        self.sub = Sprite('sub', self.img_X, SCREEN_HEIGHT * .3)
-        self.destroyer = Sprite('destroyer', self.img_X, SCREEN_HEIGHT * .5)
-        self.carrier = Sprite('carrier', self.img_X, SCREEN_HEIGHT * .7)
+class Player:
+    def __int__(self, grid):
+        self.grid = grid
+        self.keys = grid.getkeys()
+        self.values
+        self.rand_x = 0
+        self.rand_y = 0
+        self.count = 0
 
-        # Ship group
-        self.ship_group_layered = pygame.sprite.LayeredUpdates(
-            [self.corvette, self.sub, self.destroyer, self.carrier])
-        # Group of Hit and Miss instances
-        self.hit_miss_group_layered = pygame.sprite.LayeredUpdates([])
 
-    def get_player_move(self, p):
-        return self.moves[p]
+    def place_ships(self):
 
-    def player(self, player, move):
-        if player == 0:
-            self.moves[player] = move
-            if player == 0:
-                self.p1Went = True
-            else:
-                self.p2Went = True
 
-    def bothWent(self):
-        return self.p1Went and self.p2Went
+    def set_hit(self, is_hit):
+        if is_hit:
+            self.grid[self.rand_x] = 'H'
 
-    def winner(self):
-        p1 = self.moves[0].upper()[0]
 
-    def resetWent(self):
-        self.p1Went = False
-        self.p2Went = False
+    def make_decision(self):
+        self.rand_x = random.randint(0, 7)
+        self.values = self.grid[self.rand_x]
 
-    def make_decision(self, current_grid):
-        self.open = False
-        while(not self.open):
-            rand_x = random(1, 10)
-            rand_y = random(1, 10)
-        self.canPlace, self.running, self.gridCord, self.currentSprite, self.shipPos = moveShipScreen(
-            canPlace, running, gridCord, currentSprite, (rand_x, rand_y))
+        while(True):
+            self.rand_y = random.randint(0, 7)
+            self.count += 1
+
+            if self.values[self.rand_y] != 'S' and self.values[self.rand_y] != 'H':
+                self.grid[self.rand_x] = 'S'
+                return (self.keys[self.rand_x], self.grid[self.rand_x])
+
+            elif self.count == 7:
+                self.rand_x = random.randint(0, 7)
+                self.values = self.grid[self.rand_x]
+
+
+
+
+
+
+
+
+
+
 
 
