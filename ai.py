@@ -1,6 +1,5 @@
 import random
 
-
 class Player:
     def __int__(self, grid):
         self.grid = grid
@@ -10,6 +9,9 @@ class Player:
         self.rand_x = 0
         self.rand_y = 0
         self.count = 0
+
+    def get_ship_locations(self):
+        return self.shipLocations
 
     def place_ships(self, block):
         ships = ['corvette', 'sub', 'carrier', 'destroyer']
@@ -39,7 +41,6 @@ class Player:
                                                  [rows[rowIndex], 5 * block + col[colIndex]]]
             ships.pop(index)  # Ships get placed once so removes ship from list
             rows.pop(rowIndex)  # Only allowing one ship per row, so pops the row index so not accessed again
-        return self.shipLocations
 
     def set_hit(self, is_hit):
         if is_hit:
