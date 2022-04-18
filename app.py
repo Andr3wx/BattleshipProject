@@ -366,7 +366,7 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWi
                 drawGrid()
                 hit = Hit_Miss("hit")
                 hitWinCount += 1
-                if checkIfMultWin(hitWinCount) == True:
+                if checkIfMultWin(hitWinCount):
                     print("Player: ", network.getP(), " Wins!")
                     run = False
                 positionHit = getRectCoord(pos, grid)
@@ -559,14 +559,15 @@ if __name__ == "__main__":
         if screenName == "Placing Ships":
             canPlace, running, gridCord, currentSprite, shipPos, screenName, opposingShipPos = moveShipScreen(
                 canPlace, running, gridCord, currentSprite, shipPos, n, screenName, opposingShipPos)
-            Pai(gridCord)
+            if ai:
+                Pai(gridCord)
 
         elif screenName == "Taking Shot":
+            if ai:
+                gridCord = Pai.make_decision()
             running, gridCord, click, screenName, hitCount = takeShotScreen(running, gridCord, click, n, screenName,
                                                                             opposingShipPos, hitCount)
         elif screenName == "Other Player":
-            if ai:
-                gridCord = Pai.make_decsion()
             screenName, running = otherPlayerTurnScreen(
                 screenName, shipPos, n, gridCord, running)
 
