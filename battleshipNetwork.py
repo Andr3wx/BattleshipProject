@@ -21,7 +21,7 @@ class Network:
             else:
                 self.server = i
                 break
-        self.server = '172.22.8.21'
+        self.server = '172.20.10.2'
         print(socket.gethostbyname_ex(socket.gethostname()))
         print(self.server)
         self.port = 5555
@@ -29,6 +29,9 @@ class Network:
         self.client.connect(self.addr)
         self.p = self.client.recv(2048).decode()
         # print(self.p)
+
+
+
 
     def getP(self):
         return self.p

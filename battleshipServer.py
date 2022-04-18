@@ -2,12 +2,10 @@ import socket
 from _thread import *
 import sys
 import pickle
-from playerClass import Player
 import time
 import threading
 
-# Create worker threads
-# def create_workers():
+
 completeSetup = ['', '']
 whichTurn = 0
 intendedMsg = ''
@@ -107,9 +105,4 @@ while True:
         t = threading.Thread(target=handle_client, args=(conn, p), daemon=True)
         t.start()
         p += 1
-    # else:
-    #     print(playersConnected)
-    #     for connect in range(1,len(playersConnected)):
-    #         print('in')
-    #         threads.append(threading.Thread(target=handle_client,args=(playersConnected[connect],connect),daemon=True))
-    #         threads[connect].start()
+
