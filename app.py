@@ -514,13 +514,13 @@ if __name__ == "__main__":
     pygame.display.set_caption("Battleship")  # set caption
     icon = pygame.image.load('images/battleship.png')  # set game icon
     pygame.display.set_icon(icon)
-    n = Network()
-    # n.send("Check")
-    player = n.getP()
-    print("you are player: ", player)
-    screenName = n.receive()
-
-    print(screenName)
+    # n = Network()
+    # # n.send("Check")
+    # player = n.getP()
+    # print("you are player: ", player)
+    # screenName = n.receive()
+    n = False
+    # print(screenName)
     # n.send("Test")
 
     # create ship objects
@@ -537,7 +537,7 @@ if __name__ == "__main__":
     hit_miss_group_layered = pygame.sprite.LayeredUpdates([])
 
     # create players
-    is_ai = False
+    is_ai = True
 
     if ai:
         Pai = ai.Player()
@@ -551,7 +551,7 @@ if __name__ == "__main__":
     currentSprite = None
     click = False
     hitCount = 0
-    # screenName = "Placing Ships"
+    screenName = "Placing Ships"
     shipPos = {corvette: [-1, -1], sub: [-1, -1],
                destroyer: [-1, -1], carrier: [-1, -1]}
     opposingShipPos = {}
@@ -561,6 +561,7 @@ if __name__ == "__main__":
             canPlace, running, gridCord, currentSprite, shipPos, screenName, opposingShipPos = moveShipScreen(
                 canPlace, running, gridCord, currentSprite, shipPos, n, screenName, opposingShipPos)
             if ai:
+                Pai.set_grid(gridCord)
                 Pai.place_ships(block())
 
         elif screenName == "Taking Shot":

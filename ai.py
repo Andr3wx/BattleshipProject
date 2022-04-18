@@ -1,11 +1,10 @@
 import random
 
 class Player:
-    def __int__(self, grid):
-        self.grid = grid
-        self.keys = grid.getkeys()
+    def __init__(self):
+        self.grid = {}
         self.shipLocations = {}
-        self.values
+        self.values = {}
         self.rand_x = 0
         self.rand_y = 0
         self.count = 0
@@ -13,10 +12,13 @@ class Player:
     def get_ship_locations(self):
         return self.shipLocations
 
+    def set_grid(self, grid):
+        self.grid = grid
+
     def place_ships(self, block):
         ships = ['corvette', 'sub', 'carrier', 'destroyer']
-        rows = self.keys  # Gets row coordinates
-        col = self.grid[self.keys[0]]  # Gets column coordinates
+        rows = list(self.grid.keys())  # Gets row coordinates
+        cols = self.grid[rows[0]]  # Gets column coordinates
         while len(ships) > 0:
             index = random.randint(0, len(ships) - 1)  # Gets a random ship from ships list
             rowIndex = random.randint(0, len(rows) - 1)  # Gets a random row value
@@ -25,20 +27,20 @@ class Player:
                 colIndex = random.randint(0, 5)
                 # Beginning coordinates are the given row and given column
                 # End coordinates is just the column value plus how many blocks the ship takes up
-                self.shipLocations['corvette'] = [[rows[rowIndex], col[colIndex]],
-                                                  [rows[rowIndex], 2 * block + col[colIndex]]]
+                self.shipLocations['corvette'] = [[rows[rowIndex], cols[colIndex]],
+                                                  [rows[rowIndex], 2 * block + cols[colIndex]]]
             elif ships[index] == 'sub':
                 colIndex = random.randint(0, 4)
-                self.shipLocations['sub'] = [[rows[rowIndex], col[colIndex]],
-                                             [rows[rowIndex], 3 * block + col[colIndex]]]
+                self.shipLocations['sub'] = [[rows[rowIndex], cols[colIndex]],
+                                             [rows[rowIndex], 3 * block + cols[colIndex]]]
             elif ships[index] == 'destroyer':
                 colIndex = random.randint(0, 3)
-                self.shipLocations['destroyer'] = [[rows[rowIndex], col[colIndex]],
-                                                   [rows[rowIndex], 4 * block + col[colIndex]]]
+                self.shipLocations['destroyer'] = [[rows[rowIndex], cols[colIndex]],
+                                                   [rows[rowIndex], 4 * block + cols[colIndex]]]
             elif ships[index] == 'carrier':
                 colIndex = random.randint(0, 2)
-                self.shipLocations['carrier'] = [[rows[rowIndex], col[colIndex]],
-                                                 [rows[rowIndex], 5 * block + col[colIndex]]]
+                self.shipLocations['carrier'] = [[rows[rowIndex], cols[colIndex]],
+                                                 [rows[rowIndex], 5 * block + cols[colIndex]]]
             ships.pop(index)  # Ships get placed once so removes ship from list
             rows.pop(rowIndex)  # Only allowing one ship per row, so pops the row index so not accessed again
 
