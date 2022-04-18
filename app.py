@@ -561,7 +561,7 @@ if __name__ == "__main__":
             canPlace, running, gridCord, currentSprite, shipPos, screenName, opposingShipPos = moveShipScreen(
                 canPlace, running, gridCord, currentSprite, shipPos, n, screenName, opposingShipPos)
             if ai:
-                Pai(gridCord)
+                Pai.place_ships(block())
 
         elif screenName == "Taking Shot":
             if ai:
