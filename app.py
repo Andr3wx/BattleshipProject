@@ -502,14 +502,17 @@ def convertStrToShip(strShips):
 
 # Parameter is the other player ship location dict
 def checkIfHitOther(shipDic, shotPos):
-    print(shipDic)
+    #print(shipDic)
     for x in shipDic:
         temp = shipDic[x]
-        print(temp)
+        #print(temp)
         if len(temp) > 1:
             temp1 = temp[0]     # Beginning ship coordinates
             temp2 = temp[1]     # End ships coordinates
             # If y coordinates are the same for ship location and shot location
+            print('Ship beginning row coordinate: ', temp1[1])
+            print('Shot row coordinate: ',shotPos[1])
+            print('Ship end row coordinate: ', )
             if temp1[1] == shotPos[1]:
                 print('in')
                 if x == 'corvette':
@@ -709,6 +712,7 @@ if __name__ == "__main__":
         Pai = ai.Player()
         n = False
         gridCord = drawGrid()
+        #print(gridCord)
         Pai.set_grid(gridCord)
     else:
         server = multiplayerSubOptions()
@@ -747,6 +751,9 @@ if __name__ == "__main__":
     #     Pai = ai.Player()
     # else:
     #     is_ai = False
+    if gameType:
+        Pai.place_ships(block())
+        opposingShipPos = Pai.get_ship_locations()
 
     while running:
        # print('Player Ships: ', shipPos)
@@ -760,10 +767,12 @@ if __name__ == "__main__":
                 canPlace, running, gridCord, currentSprite, shipPos, screenName, opposingShipPos = moveShipScreen(
                     canPlace, running, gridCord, currentSprite, shipPos, n, screenName, opposingShipPos, gameType)
                 # Pai.set_grid(gridCord)
-                Pai.place_ships(block())
-                opposingShipPos = Pai.get_ship_locations()
+                # Pai.place_ships(block())
+                # opposingShipPos = Pai.get_ship_locations()
 
         elif screenName == "Taking Shot":
+            print(shipPos)
+            #break
             if gameType == True:
 
                 running, gridCord, click, screenName, hitCount = takeShotScreen(running, gridCord, click, n, screenName,
