@@ -313,6 +313,10 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN, oth
             print(otherPlayerShips)
             otherPlayerShips = convertStrToShip(otherPlayerShips)
             print(otherPlayerShips)
+        else:
+            screenN = "Taking Shots"
+
+        print(screenN)
         return placing, run, grid, curSprite, shipLoc, screenN, otherPlayerShips
         # print(screenN)
 
