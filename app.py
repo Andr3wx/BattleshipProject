@@ -4,6 +4,7 @@ from battleshipNetwork import Network
 from spriteClasses import Hit_Miss, Sprite
 import ai
 import time
+import threading
 
 
 # import battleship
@@ -289,7 +290,7 @@ def shipIsHeld(position, sprite):
     pygame.display.update()
 
 
-def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN, otherPlayerShips):
+def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN, otherPlayerShips, gameType):
     pos = pygame.mouse.get_pos()
     if placing:
         shipIsHeld(pos, curSprite)
@@ -303,13 +304,15 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN, oth
             allPlaced = False
             break
     if allPlaced and not placing:
-        network.send(convertShipToStr(shipLoc))
+        if gameType == False:
+
+            network.send(convertShipToStr(shipLoc))
         # time.sleep(1)
-        screenN = network.receive()
-        otherPlayerShips = network.receive()
-        print(otherPlayerShips)
-        otherPlayerShips = convertStrToShip(otherPlayerShips)
-        print(otherPlayerShips)
+            screenN = network.receive()
+            otherPlayerShips = network.receive()
+            print(otherPlayerShips)
+            otherPlayerShips = convertStrToShip(otherPlayerShips)
+            print(otherPlayerShips)
         return placing, run, grid, curSprite, shipLoc, screenN, otherPlayerShips
         # print(screenN)
 
@@ -342,7 +345,7 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN, oth
     return placing, run, grid, curSprite, shipLoc, screenN, otherPlayerShips
 
 
-def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWinCount):
+def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWinCount, gameType):
     is_hit = True
     pos = pygame.mouse.get_pos()
 
@@ -356,9 +359,13 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWi
                                 0]) + ',' + str(getRectCoord(pos, grid)[1])
                 is_hit = checkIfHitOther(
                     otherPlayerShips, getRectCoord(pos, grid))
-                Pai.set_hit(is_hit)
-                network.send(exactSpot)
-                screenN = 'Other Player'
+                if gameType == True:
+
+                    Pai.set_hit(is_hit)
+                else:
+
+                    network.send(exactSpot)
+                    screenN = 'Other Player'
 
                 #   screenN = #! Set to idle screen
             # send to other player to see if hit or miss
@@ -507,19 +514,120 @@ def checkIfMultWin(hitCount):
         return False
 
 
+def mainMenu():
+
+    # defining a font
+    smallfont = pygame.font.SysFont('Corbel', 35)
+
+    # rendering a text written in
+    # this font
+    quitText = smallfont.render('quit', True, black)
+    playSingle = smallfont.render('single player', True, black)
+    playMulti = smallfont.render('multiplayer', True, black)
+
+    while True:
+
+        screen.fill((60, 25, 60))
+
+        # stores the (x,y) coordinates into
+        # the variable as a tuple
+        mouse = pygame.mouse.get_pos()
+
+        for ev in pygame.event.get():
+
+            if ev.type == pygame.QUIT:
+                pygame.quit()
+
+            # checks if a mouse is clicked
+            if ev.type == pygame.MOUSEBUTTONDOWN:
+
+                # if the mouse is clicked on the
+                # button the game is terminated
+                if SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 <= mouse[1] <= SCREEN_HEIGHT / 2 + 40:
+                    run = False
+                    screenName = "Placing Ships"
+                    single = True
+                    return screenName, single, run
+
+                elif SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 - 80 <= mouse[1] <= SCREEN_HEIGHT / 2 - 40:
+                    screenName = "Placing Ships"
+                    single = True
+                    run = True
+                    return screenName, single, run
+
+                elif SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 - 40 <= mouse[1] <= SCREEN_HEIGHT / 2:
+                    screenName = "Placing Ships"
+                    single = False
+                    run = True
+                    return screenName, single, run
+
+                # fills the screen with a color
+
+        # if mouse is hovered on a button it
+        # changes to lighter shade
+        if SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 <= mouse[1] <= SCREEN_HEIGHT / 2 + 40:
+            pygame.draw.rect(screen, white, [
+                             SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 180, 40])
+
+        else:
+            pygame.draw.rect(screen, lightBlue, [
+                             SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 180, 40])
+
+        if SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 - 80 <= mouse[1] <= SCREEN_HEIGHT / 2 - 40:
+            pygame.draw.rect(screen, white, [
+                             SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 80, 180, 40])
+
+        else:
+            pygame.draw.rect(screen, lightBlue, [
+                             SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 80, 180, 40])
+
+        if SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 - 40 <= mouse[1] <= SCREEN_HEIGHT / 2:
+            pygame.draw.rect(screen, white, [
+                             SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 40, 180, 40])
+
+        else:
+            pygame.draw.rect(screen, lightBlue, [
+                             SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 40, 180, 40])
+
+            # superimposing the text onto our button
+        screen.blit(quitText, (SCREEN_WIDTH / 2 + 20, SCREEN_HEIGHT / 2))
+        screen.blit(playSingle, (SCREEN_WIDTH /
+                    2 + 20, SCREEN_HEIGHT / 2 - 80))
+        screen.blit(playMulti, (SCREEN_WIDTH / 2 + 20, SCREEN_HEIGHT / 2 - 40))
+
+        # updates the frames of the game
+        pygame.display.update()
+
+
 if __name__ == "__main__":
+    counter = 0
+    running = True
+    canPlace = False  # Indicates whether player is in the process of choosing a ship position
+    gridCord = {}  # Indicates the row rectangle coordinates and stores the column coordinates within the key
+    currentSprite = None
+    click = False
+    hitCount = 0
+    screenName = "Placing Ships"
+
     pygame.init()  # initialize pygame
     screen = pygame.display.set_mode(
         (SCREEN_WIDTH, SCREEN_HEIGHT))  # create screen
     pygame.display.set_caption("Battleship")  # set caption
     icon = pygame.image.load('images/battleship.png')  # set game icon
     pygame.display.set_icon(icon)
-    # n = Network()
-    # # n.send("Check")
-    # player = n.getP()
-    # print("you are player: ", player)
-    # screenName = n.receive()
-    n = False
+    screenName, gameType, running = mainMenu()
+
+    if gameType == True:
+        Pai = ai.Player()
+        n = False
+    else:
+        n = Network()
+    # n.send("Check")
+        player = n.getP()
+        print("you are player: ", player)
+        screenName = n.receive()
+
+    #n = False
     # print(screenName)
     # n.send("Test")
 
@@ -536,39 +644,36 @@ if __name__ == "__main__":
     # Group of Hit and Miss instances
     hit_miss_group_layered = pygame.sprite.LayeredUpdates([])
 
-    # create players
-    is_ai = True
-
-    if ai:
-        Pai = ai.Player()
-    else:
-        is_ai = False
-
-    counter = 0
-    running = True
-    canPlace = False  # Indicates whether player is in the process of choosing a ship position
-    gridCord = {}  # Indicates the row rectangle coordinates and stores the column coordinates within the key
-    currentSprite = None
-    click = False
-    hitCount = 0
-    screenName = "Placing Ships"
     shipPos = {corvette: [-1, -1], sub: [-1, -1],
                destroyer: [-1, -1], carrier: [-1, -1]}
     opposingShipPos = {}
+
+    # if ai:
+    #     Pai = ai.Player()
+    # else:
+    #     is_ai = False
+
     while running:
         #  Placing ships
         if screenName == "Placing Ships":
-            canPlace, running, gridCord, currentSprite, shipPos, screenName, opposingShipPos = moveShipScreen(
-                canPlace, running, gridCord, currentSprite, shipPos, n, screenName, opposingShipPos)
-            if ai:
+            if gameType == False:
+                canPlace, running, gridCord, currentSprite, shipPos, screenName, opposingShipPos = moveShipScreen(
+                    canPlace, running, gridCord, currentSprite, shipPos, n, screenName, opposingShipPos, gameType)
+            if gameType == True:
+
+                canPlace, running, gridCord, currentSprite, shipPos, screenName, opposingShipPos = moveShipScreen(
+                    canPlace, running, gridCord, currentSprite, shipPos, n, screenName, opposingShipPos, gameType)
                 Pai.set_grid(gridCord)
                 Pai.place_ships(block())
 
         elif screenName == "Taking Shot":
-            if ai:
+            if gameType == True:
                 gridCord = Pai.make_decision()
-            running, gridCord, click, screenName, hitCount = takeShotScreen(running, gridCord, click, n, screenName,
-                                                                            opposingShipPos, hitCount)
+                running, gridCord, click, screenName, hitCount = takeShotScreen(running, gridCord, click, n, screenName,
+                                                                                opposingShipPos, hitCount, gameType)
+            else:
+                running, gridCord, click, screenName, hitCount = takeShotScreen(running, gridCord, click, n, screenName,
+                                                                                opposingShipPos, hitCount, gameType)
         elif screenName == "Other Player":
             screenName, running = otherPlayerTurnScreen(
                 screenName, shipPos, n, gridCord, running)
