@@ -387,6 +387,7 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWi
                         run = False
                     else:
                         print("You Win!")
+                        run = False
                 positionHit = getRectCoord(pos, grid)
                 hit.set_location(positionHit)
                 hit_miss_group_layered.add(hit)
