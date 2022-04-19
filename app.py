@@ -363,11 +363,12 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWi
             if checkIfGrid(pos, grid)[0] != -1 and checkIfGrid(pos, grid)[1] != -1:
                 exactSpot = str(getRectCoord(pos, grid)[
                                 0]) + ',' + str(getRectCoord(pos, grid)[1])
+                #print(otherPlayerShips)
                 is_hit = checkIfHitOther(
                     otherPlayerShips, getRectCoord(pos, grid))
                 if gameType == True:
-
-                    Pai.set_hit(is_hit)
+                    #Pai.set_hit(is_hit)
+                    screenN = 'Other Player'
                 else:
 
                     network.send(exactSpot)
@@ -416,7 +417,7 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWi
     return run, grid, clicked, screenN, hitWinCount
 
 
-def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run):
+def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run,gameType):
     drawGrid()
     ship_group_layered.draw(screen)
     pygame.display.update()
@@ -424,20 +425,26 @@ def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:  # press ESC to quit
                 run = False
-    getShot = network.receive()
-    print(getShot)
-    getShot = getShot.split(',')
     shotSpot = []
-    shotSpot.append(float(getShot[0]))
-    shotSpot.append(float(getShot[1]))
-    print(shotSpot[0], "     ", shotSpot[1])
+    if not gameType:
+        getShot = network.receive()
+        #print(getShot)
+        getShot = getShot.split(',')
+        shotSpot.append(float(getShot[0]))
+        shotSpot.append(float(getShot[1]))
+        print(shotSpot[0], "     ", shotSpot[1])
+    else:
+        getShot = Pai.make_decision()
+        print(getShot)
+        shotSpot.append(float(getShot[0]))
+        shotSpot.append(float(getShot[1]))
     rect = pygame.Rect(shotSpot[0], shotSpot[1], block(), block())
     pygame.draw.rect(screen, red, rect)  # Highlights given box
     pygame.draw.rect(screen, black, rect, 1)
     pygame.display.update()
     time.sleep(3)
     screenN = 'Taking Shot'
-    print(screenN)
+    #print(screenN)
 
     # counter += 1
     # if counter == 20:
@@ -490,6 +497,7 @@ def convertStrToShip(strShips):
 
 # Parameter is the other player ship location dict
 def checkIfHitOther(shipDic, shotPos):
+    print(shipDic)
     for x in shipDic:
         temp = shipDic[x]
         print(temp)
@@ -498,6 +506,7 @@ def checkIfHitOther(shipDic, shotPos):
             temp2 = temp[1]     # End ships coordinates
             # If y coordinates are the same for ship location and shot location
             if temp1[1] == shotPos[1]:
+                print('in')
                 if x == 'corvette':
                     if temp1[0] <= shotPos[0] <= temp2[0]:
                         return True
@@ -623,9 +632,11 @@ if __name__ == "__main__":
     pygame.display.set_icon(icon)
     screenName, gameType, running = mainMenu()
 
-    if gameType == True:
+    if gameType:
         Pai = ai.Player()
         n = False
+        gridCord = drawGrid()
+        Pai.set_grid(gridCord)
     else:
         n = Network()
     # n.send("Check")
@@ -660,6 +671,7 @@ if __name__ == "__main__":
     #     is_ai = False
 
     while running:
+       # print('Player Ships: ', shipPos)
         #  Placing ships
         if screenName == "Placing Ships":
             if gameType == False:
@@ -669,20 +681,21 @@ if __name__ == "__main__":
 
                 canPlace, running, gridCord, currentSprite, shipPos, screenName, opposingShipPos = moveShipScreen(
                     canPlace, running, gridCord, currentSprite, shipPos, n, screenName, opposingShipPos, gameType)
-                Pai.set_grid(gridCord)
+                # Pai.set_grid(gridCord)
                 Pai.place_ships(block())
+                opposingShipPos = Pai.get_ship_locations()
 
         elif screenName == "Taking Shot":
             if gameType == True:
 
                 running, gridCord, click, screenName, hitCount = takeShotScreen(running, gridCord, click, n, screenName,
                                                                                 opposingShipPos, hitCount, gameType)
-                gridCord = Pai.make_decision()
+                #gridCord = Pai.make_decision()
             else:
                 running, gridCord, click, screenName, hitCount = takeShotScreen(running, gridCord, click, n, screenName,
                                                                                 opposingShipPos, hitCount, gameType)
         elif screenName == "Other Player":
             screenName, running = otherPlayerTurnScreen(
-                screenName, shipPos, n, gridCord, running)
+                screenName, shipPos, n, gridCord, running,gameType)
 
         # screenName = n.receive()
