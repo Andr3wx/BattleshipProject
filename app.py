@@ -363,11 +363,11 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWi
             if checkIfGrid(pos, grid)[0] != -1 and checkIfGrid(pos, grid)[1] != -1:
                 exactSpot = str(getRectCoord(pos, grid)[
                                 0]) + ',' + str(getRectCoord(pos, grid)[1])
-                #print(otherPlayerShips)
+                # print(otherPlayerShips)
                 is_hit = checkIfHitOther(
                     otherPlayerShips, getRectCoord(pos, grid))
                 if gameType == True:
-                    #Pai.set_hit(is_hit)
+                    # Pai.set_hit(is_hit)
                     screenN = 'Other Player'
                 else:
 
@@ -382,8 +382,11 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWi
                 hit = Hit_Miss("hit")
                 hitWinCount += 1
                 if checkIfMultWin(hitWinCount):
-                    print("Player: ", network.getP(), " Wins!")
-                    run = False
+                    if gameType == False:
+                        print("Player: ", network.getP(), " Wins!")
+                        run = False
+                    else:
+                        print("You Win!")
                 positionHit = getRectCoord(pos, grid)
                 hit.set_location(positionHit)
                 hit_miss_group_layered.add(hit)
@@ -417,7 +420,7 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWi
     return run, grid, clicked, screenN, hitWinCount
 
 
-def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run,gameType):
+def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run, gameType):
     drawGrid()
     ship_group_layered.draw(screen)
     pygame.display.update()
@@ -428,7 +431,7 @@ def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run,gameType):
     shotSpot = []
     if not gameType:
         getShot = network.receive()
-        #print(getShot)
+        # print(getShot)
         getShot = getShot.split(',')
         shotSpot.append(float(getShot[0]))
         shotSpot.append(float(getShot[1]))
@@ -444,7 +447,7 @@ def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run,gameType):
     pygame.display.update()
     time.sleep(3)
     screenN = 'Taking Shot'
-    #print(screenN)
+    # print(screenN)
 
     # counter += 1
     # if counter == 20:
@@ -696,6 +699,6 @@ if __name__ == "__main__":
                                                                                 opposingShipPos, hitCount, gameType)
         elif screenName == "Other Player":
             screenName, running = otherPlayerTurnScreen(
-                screenName, shipPos, n, gridCord, running,gameType)
+                screenName, shipPos, n, gridCord, running, gameType)
 
         # screenName = n.receive()
