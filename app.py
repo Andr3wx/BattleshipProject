@@ -313,11 +313,13 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN, oth
             print(otherPlayerShips)
             otherPlayerShips = convertStrToShip(otherPlayerShips)
             print(otherPlayerShips)
+            return placing, run, grid, curSprite, shipLoc, screenN, otherPlayerShips
         else:
-            screenN = "Taking Shots"
+            screenN = "Taking Shot"
+            return placing, run, grid, curSprite, shipLoc, screenN, otherPlayerShips
 
         print(screenN)
-        return placing, run, grid, curSprite, shipLoc, screenN, otherPlayerShips
+
         # print(screenN)
 
     for event in pygame.event.get():
@@ -672,9 +674,10 @@ if __name__ == "__main__":
 
         elif screenName == "Taking Shot":
             if gameType == True:
-                gridCord = Pai.make_decision()
+
                 running, gridCord, click, screenName, hitCount = takeShotScreen(running, gridCord, click, n, screenName,
                                                                                 opposingShipPos, hitCount, gameType)
+                gridCord = Pai.make_decision()
             else:
                 running, gridCord, click, screenName, hitCount = takeShotScreen(running, gridCord, click, n, screenName,
                                                                                 opposingShipPos, hitCount, gameType)
