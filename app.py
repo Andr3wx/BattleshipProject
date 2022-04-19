@@ -5,7 +5,6 @@ from spriteClasses import Hit_Miss, Sprite
 import ai
 import time
 import threading
-import subprocess
 
 
 # import battleship
@@ -502,16 +501,16 @@ def convertStrToShip(strShips):
 
 # Parameter is the other player ship location dict
 def checkIfHitOther(shipDic, shotPos):
-    #print(shipDic)
+    # print(shipDic)
     for x in shipDic:
         temp = shipDic[x]
-        #print(temp)
+        # print(temp)
         if len(temp) > 1:
             temp1 = temp[0]     # Beginning ship coordinates
             temp2 = temp[1]     # End ships coordinates
             # If y coordinates are the same for ship location and shot location
             print('Ship beginning row coordinate: ', temp1[1])
-            print('Shot row coordinate: ',shotPos[1])
+            print('Shot row coordinate: ', shotPos[1])
             print('Ship end row coordinate: ', )
             if temp1[1] == shotPos[1]:
                 print('in')
@@ -625,7 +624,7 @@ def mainMenu():
 
 
 def startServer():
-    subprocess.call("battleshipServer.py", shell=True)
+    import battleshipServer
 
 
 def multiplayerSubOptions():
@@ -712,7 +711,7 @@ if __name__ == "__main__":
         Pai = ai.Player()
         n = False
         gridCord = drawGrid()
-        #print(gridCord)
+        # print(gridCord)
         Pai.set_grid(gridCord)
     else:
         server = multiplayerSubOptions()
@@ -772,7 +771,7 @@ if __name__ == "__main__":
 
         elif screenName == "Taking Shot":
             print(shipPos)
-            #break
+            # break
             if gameType == True:
 
                 running, gridCord, click, screenName, hitCount = takeShotScreen(running, gridCord, click, n, screenName,
