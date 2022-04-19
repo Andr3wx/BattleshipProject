@@ -579,6 +579,7 @@ def mainMenu():
                     screenName = "Placing Ships"
                     single = False
                     run = True
+                    #start = multiplayerSubOptions()
 
                     return screenName, single, run
 
@@ -624,6 +625,68 @@ def startServer():
     subprocess.call("battleshipServer.py", shell=True)
 
 
+def multiplayerSubOptions():
+    # defining a font
+    smallfont = pygame.font.SysFont('Corbel', 35)
+
+    # rendering a text written in
+    # this font
+    startGame = smallfont.render('Start Game', True, black)
+    joinGame = smallfont.render('Join game', True, black)
+    while True:
+        # stores the (x,y) coordinates into
+        # the variable as a tuple
+        mouse = pygame.mouse.get_pos()
+        # fills the screen with a color
+        screen.fill((60, 25, 60))
+
+        for ev in pygame.event.get():
+            # checks if a mouse is clicked
+            if ev.type == pygame.MOUSEBUTTONDOWN:
+
+                # if the mouse is clicked on the
+                # button the game is terminated
+                # Start game
+                if SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 <= mouse[1] <= SCREEN_HEIGHT / 2 + 40:
+                    start = False
+                    return start
+
+                # Join game
+                elif SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 - 80 <= mouse[1] <= SCREEN_HEIGHT / 2 - 40:
+                    start = True
+                    return start
+                    # fills the screen with a color
+                screen.fill((60, 25, 60))
+
+                # if mouse is hovered on a button it
+                # changes to lighter shade
+                # Start game
+                if SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 <= mouse[1] <= SCREEN_HEIGHT / 2 + 40:
+                    pygame.draw.rect(
+                        screen, white, [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 180, 40])
+
+                else:
+                    pygame.draw.rect(
+                        screen, lightBlue, [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 180, 40])
+
+                # Join game
+                if SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 - 80 <= mouse[1] <= SCREEN_HEIGHT / 2 - 40:
+                    pygame.draw.rect(
+                        screen, white, [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 80, 180, 40])
+
+                else:
+                    pygame.draw.rect(
+                        screen, lightBlue, [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 80, 180, 40])
+
+                    # superimposing the text onto our button
+                screen.blit(joinGame, (SCREEN_WIDTH /
+                            2 + 20, SCREEN_HEIGHT / 2))
+                screen.blit(startGame, (SCREEN_WIDTH / 2 +
+                            20, SCREEN_HEIGHT / 2 - 80))
+                # updates the frames of the game
+                pygame.display.update()
+
+
 if __name__ == "__main__":
     counter = 0
     running = True
@@ -648,8 +711,11 @@ if __name__ == "__main__":
         gridCord = drawGrid()
         Pai.set_grid(gridCord)
     else:
-        t1 = threading.Thread(target=startServer, name='t1')
-        t1.start()
+        server = multiplayerSubOptions()
+        if server:
+
+            t1 = threading.Thread(target=startServer, name='t1')
+            t1.start()
         n = Network()
     # n.send("Check")
         player = n.getP()
