@@ -5,6 +5,7 @@ from spriteClasses import Hit_Miss, Sprite
 import ai
 import time
 import threading
+import subprocess
 
 
 # import battleship
@@ -578,6 +579,7 @@ def mainMenu():
                     screenName = "Placing Ships"
                     single = False
                     run = True
+
                     return screenName, single, run
 
                 # fills the screen with a color
@@ -618,6 +620,10 @@ def mainMenu():
         pygame.display.update()
 
 
+def startServer():
+    subprocess.call("battleshipServer.py", shell=True)
+
+
 if __name__ == "__main__":
     counter = 0
     running = True
@@ -642,6 +648,8 @@ if __name__ == "__main__":
         gridCord = drawGrid()
         Pai.set_grid(gridCord)
     else:
+        t1 = threading.Thread(target=startServer, name='t1')
+        t1.start()
         n = Network()
     # n.send("Check")
         player = n.getP()
