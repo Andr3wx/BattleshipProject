@@ -5,6 +5,7 @@ from spriteClasses import Hit_Miss, Sprite
 import ai
 import time
 import threading
+import socket
 
 
 # import battleship
@@ -637,7 +638,7 @@ def multiplayerSubOptions():
     joinGame = smallfont.render('Join game', True, black)
 
     input_rect = pygame.Rect(SCREEN_WIDTH / 2 +
-                            20, SCREEN_HEIGHT / 2 - 40, 140, 32)
+                             20, SCREEN_HEIGHT / 2 - 40, 140, 32)
 
     input_ip = ' '
 
@@ -657,12 +658,13 @@ def multiplayerSubOptions():
                 # Start game
                 if SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 <= mouse[1] <= SCREEN_HEIGHT / 2 + 40:
                     start = False
-                    return start, None
-
+                    return start, input_ip
 
                 # Join game
                 elif SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 - 80 <= mouse[1] <= SCREEN_HEIGHT / 2 - 40:
                     start = True
+                    input_ip = socket.gethostname()
+                    print(input_ip)
                     return start, input_ip
 
                     # fills the screen with a color
@@ -679,7 +681,6 @@ def multiplayerSubOptions():
                     pygame.draw.rect(
                         screen, lightBlue, [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 180, 40])
 
-
                 # Join game
                 if SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 - 80 <= mouse[1] <= SCREEN_HEIGHT / 2 - 40:
                     pygame.draw.rect(
@@ -690,7 +691,7 @@ def multiplayerSubOptions():
                         screen, lightBlue, [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 80, 180, 40])
 
                 pygame.draw.rect(screen, white, input_rect)
-                    # superimposing the text onto our button
+                # superimposing the text onto our button
                 screen.blit(joinGame, (SCREEN_WIDTH /
                             2 + 20, SCREEN_HEIGHT / 2))
 
@@ -711,7 +712,7 @@ def multiplayerSubOptions():
                 screen.blit(text_surface, (SCREEN_WIDTH / 2 +
                                            20, SCREEN_HEIGHT / 2 - 40))
                 if SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 <= mouse[
-                    1] <= SCREEN_HEIGHT / 2 + 40:
+                        1] <= SCREEN_HEIGHT / 2 + 40:
                     pygame.draw.rect(
                         screen, white, [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 180, 40])
 
@@ -753,6 +754,7 @@ if __name__ == "__main__":
         Pai.set_grid(gridCord)
     else:
         server, ip_address = multiplayerSubOptions()
+        print(ip_address)
 
         if server:
             t1 = threading.Thread(target=startServer, name='t1')
