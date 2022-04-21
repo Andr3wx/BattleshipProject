@@ -118,14 +118,15 @@ def checkIfGrid(position, locationGrid):
 def getRectCoord(cord, locationGrid):
     tempKey = float(-1)
     tempCol = float(-1)
+
     for x in locationGrid:  # Loops through keys ( Row values )
-        if float(x) > cord[0]:  # Once finds key value greater than mouse position
+        if float(x) > float(cord[0]):  # Once finds key value greater than mouse position
             break  # Ends loop and temp key has previous position
         tempKey = float(x)
     if tempKey != -1:  # Make sure it finds valid location
         temp = locationGrid[str(tempKey)]
         for x in temp:  # Loops through columns in similar fashion as keys above
-            if x > cord[1]:
+            if x > float(cord[1]):
                 break
             tempCol = x
     return [tempKey, tempCol]
@@ -359,7 +360,6 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWi
                 is_hit = checkIfHitOther(
                     otherPlayerShips, getRectCoord(pos, grid))
                 if gameType == True:
-                    # Pai.set_hit(is_hit)
                     screenN = 'Other Player'
                 else:
 
@@ -414,6 +414,7 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWi
 
 
 def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run, gameType):
+    is_hit = True
     drawGrid()
     ship_group_layered.draw(screen)
     pygame.display.update()
@@ -431,10 +432,23 @@ def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run, gameType):
         getShot = Pai.make_decision()
         shotSpot.append(float(getShot[0]))
         shotSpot.append(float(getShot[1]))
+
+    print("Get shot", getShot)
     rect = pygame.Rect(shotSpot[0], shotSpot[1], block(), block())
     pygame.draw.rect(screen, red, rect)  # Highlights given box
     pygame.draw.rect(screen, black, rect, 1)
-    print("Get Shot", getShot)
+
+    # pass in correct ship locations for player not other player
+    is_hit = checkIfHitOther(shipPos, getRectCoord(getShot, gridCord))
+    print("Is Hit", is_hit)
+
+    if is_hit:
+        hit = Hit_Miss('hit')
+        hit.set_location(shotSpot)
+    else:
+        miss = Hit_Miss('miss')
+        miss.set_location(shotSpot)
+
     pygame.display.update()
     time.sleep(3)
     screenN = 'Taking Shot'
@@ -487,6 +501,10 @@ def convertStrToShip(strShips):
 
 # Parameter is the other player ship location dict
 def checkIfHitOther(shipDic, shotPos):
+    print("Shot pos", shotPos)
+    other = False
+    if screenName == 'Other Player':
+        other = True
     for x in shipDic:
         temp = shipDic[x]
         if len(temp) > 1:
@@ -497,18 +515,26 @@ def checkIfHitOther(shipDic, shotPos):
                 if x == 'corvette':
                     if temp1[0] <= shotPos[0] <= temp2[0]:
                         print('Hit')
+                        if other:
+                            hit_counter(x)
                         return True
                 elif x == 'sub':
                     if temp1[0] <= shotPos[0] <= temp2[0]:
                         print('Hit')
+                        if other:
+                            hit_counter(x)
                         return True
                 elif x == 'destroyer':
                     if temp1[0] <= shotPos[0] <= temp2[0]:
                         print('Hit')
+                        if other:
+                            hit_counter(x)
                         return True
                 elif x == 'carrier':
                     if temp1[0] <= shotPos[0] <= temp2[0]:
                         print('Hit')
+                        if other:
+                            hit_counter(x)
                         return True
     return False
 
@@ -705,6 +731,7 @@ def multiplayerSubOptions():
                                        2 + 20, SCREEN_HEIGHT / 2))
                 input_rect.w = max(100, text_surface.get_width() + 10)
                 pygame.display.update()
+
 
 def hit_counter(ship_name):
     corvette_count = 0
