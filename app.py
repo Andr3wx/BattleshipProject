@@ -298,7 +298,6 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN, oth
         allowToPlace, shipLoc = shipHighlight(pos, grid, curSprite, shipLoc)
 
     allPlaced = True
-    # print(shipLoc)
     for x in shipLoc:
         temp = shipLoc[x]
         if temp[0] == -1 or temp[1] == -1:
@@ -311,17 +310,11 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN, oth
         # time.sleep(1)
             screenN = network.receive()
             otherPlayerShips = network.receive()
-            print(otherPlayerShips)
             otherPlayerShips = convertStrToShip(otherPlayerShips)
-            print(otherPlayerShips)
             return placing, run, grid, curSprite, shipLoc, screenN, otherPlayerShips
         else:
             screenN = "Taking Shot"
             return placing, run, grid, curSprite, shipLoc, screenN, otherPlayerShips
-
-        print(screenN)
-
-        # print(screenN)
 
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
@@ -331,7 +324,6 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN, oth
             if placing:
                 placingShipsRelease(pos, grid, curSprite, allowToPlace)
                 placing = False
-            # print(checkIfGrid(pos, grid)[0], checkIfGrid(pos, grid)[1])
         elif event.type == pygame.MOUSEBUTTONDOWN:
             curSprite = placingShips(pos)
             if curSprite is not None:
@@ -364,7 +356,6 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWi
             if checkIfGrid(pos, grid)[0] != -1 and checkIfGrid(pos, grid)[1] != -1:
                 exactSpot = str(getRectCoord(pos, grid)[
                                 0]) + ',' + str(getRectCoord(pos, grid)[1])
-                # print(otherPlayerShips)
                 is_hit = checkIfHitOther(
                     otherPlayerShips, getRectCoord(pos, grid))
                 if gameType == True:
@@ -433,27 +424,21 @@ def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run, gameType):
     shotSpot = []
     if not gameType:
         getShot = network.receive()
-        # print(getShot)
         getShot = getShot.split(',')
         shotSpot.append(float(getShot[0]))
         shotSpot.append(float(getShot[1]))
-        print(shotSpot[0], "     ", shotSpot[1])
     else:
         getShot = Pai.make_decision()
-        print(getShot)
         shotSpot.append(float(getShot[0]))
         shotSpot.append(float(getShot[1]))
     rect = pygame.Rect(shotSpot[0], shotSpot[1], block(), block())
     pygame.draw.rect(screen, red, rect)  # Highlights given box
     pygame.draw.rect(screen, black, rect, 1)
+    print("Get Shot", getShot)
     pygame.display.update()
     time.sleep(3)
     screenN = 'Taking Shot'
-    # print(screenN)
 
-    # counter += 1
-    # if counter == 20:
-    #     screenN = 'Placing Ships'
     return screenN, run
 
 
@@ -502,30 +487,28 @@ def convertStrToShip(strShips):
 
 # Parameter is the other player ship location dict
 def checkIfHitOther(shipDic, shotPos):
-    # print(shipDic)
     for x in shipDic:
         temp = shipDic[x]
-        # print(temp)
         if len(temp) > 1:
             temp1 = temp[0]     # Beginning ship coordinates
             temp2 = temp[1]     # End ships coordinates
             # If y coordinates are the same for ship location and shot location
-            print('Ship beginning row coordinate: ', temp1[1])
-            print('Shot row coordinate: ', shotPos[1])
-            print('Ship end row coordinate: ', )
             if temp1[1] == shotPos[1]:
-                print('in')
                 if x == 'corvette':
                     if temp1[0] <= shotPos[0] <= temp2[0]:
+                        print('Hit')
                         return True
                 elif x == 'sub':
                     if temp1[0] <= shotPos[0] <= temp2[0]:
+                        print('Hit')
                         return True
                 elif x == 'destroyer':
                     if temp1[0] <= shotPos[0] <= temp2[0]:
+                        print('Hit')
                         return True
                 elif x == 'carrier':
                     if temp1[0] <= shotPos[0] <= temp2[0]:
+                        print('Hit')
                         return True
     return False
 
@@ -723,6 +706,30 @@ def multiplayerSubOptions():
                 input_rect.w = max(100, text_surface.get_width() + 10)
                 pygame.display.update()
 
+def hit_counter(ship_name):
+    corvette_count = 0
+    sub_count = 0
+    destroyer_count = 0
+    carrier_count = 0
+
+    if ship_name == 'corvette':
+        corvette_count += 1
+        if corvette_count == 2:
+            corvette.remove()
+    elif ship_name == 'sub':
+        sub_count += 1
+        if sub_count == 3:
+            sub.remove()
+    elif ship_name == 'destroyer':
+        destroyer_count += 1
+        if destroyer_count == 4:
+            destroyer.remove()
+    else:
+        carrier_count += 1
+        if carrier_count == 5:
+            carrier.remove()
+
+
 
 if __name__ == "__main__":
     counter = 0
@@ -758,7 +765,6 @@ if __name__ == "__main__":
             n = Network(socket.gethostname())
         else:
             ip_address = ip_address.lstrip()
-            ip_address = ip_address.rstrip()
             n = Network(ip_address)
 
         player = n.getP()
