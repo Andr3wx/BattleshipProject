@@ -755,7 +755,7 @@ if __name__ == "__main__":
         if server:
             t1 = threading.Thread(target=startServer, name='t1')
             t1.start()
-            n = Network(socket.gethostbyname_ex(socket.gethostname())[-1][0])
+            n = Network(socket.gethostname())
         else:
             ip_address = ip_address.lstrip()
             ip_address = ip_address.rstrip()
