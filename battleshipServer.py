@@ -1,7 +1,6 @@
 import socket
 from _thread import *
-import sys
-import pickle
+
 import time
 import threading
 
@@ -104,4 +103,3 @@ while True:
         t = threading.Thread(target=handle_client, args=(conn, p), daemon=True)
         t.start()
         p += 1
-

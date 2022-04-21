@@ -1,5 +1,4 @@
 import socket
-import pickle
 from requests import get
 import os
 import time
