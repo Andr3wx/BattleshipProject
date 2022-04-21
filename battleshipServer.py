@@ -20,7 +20,7 @@ def handle_client(connection, player):
     time.sleep(1)
     # At the beginning of the game, sets both players to placing ships
     connection.send('Placing Ships'.encode())
-   # time.sleep(5)
+
     completeSetup[player] = connection.recv(2048).decode()
     while completeSetup[0] == '' or completeSetup[1] == '':
         continue
@@ -76,7 +76,6 @@ for i in server:
     else:
         server = i
         break
-print(server)
 try:
     s.bind((server, port))
 

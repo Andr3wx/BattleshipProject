@@ -21,15 +21,12 @@ class Network:
             else:
                 self.server = i
                 break
-        # self.server = '172.22.4.211'
+
         self.server = ip_address
-        print(socket.gethostbyname_ex(socket.gethostname()))
-        print(self.server)
         self.port = 5555
         self.addr = (self.server, self.port)
         self.client.connect(self.addr)
         self.p = self.client.recv(2048).decode()
-        # print(self.p)
 
     def getP(self):
         return self.p
@@ -45,18 +42,9 @@ class Network:
         try:
             self.client.send(data.encode())
             time.sleep(1)
-            # return self.client.recv(2048).decode()
 
         except socket.error as e:
             print(e)
-        # else:
-        #     try:
-        #         self.client.send(pickle.dumps(data))
-        #         time.sleep(1)
-        #         # return self.client.recv(2048).decode()
-        #
-        #     except socket.error as e:
-        #         print(e)
 
     def receive(self):
 
@@ -66,12 +54,3 @@ class Network:
 
         except socket.error as e:
             print(e)
-        # else:
-        #     try:
-        #         time.sleep(1)
-        #         grid = pickle.loads(self.client.recv(2048)).decode()
-        #         return grid
-        #         # return self.client.recv(2048).decode()
-        #
-        #     except socket.error as e:
-        #         print(e)

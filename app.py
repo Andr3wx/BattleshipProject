@@ -582,7 +582,6 @@ def mainMenu():
                     screenName = "Placing Ships"
                     single = False
                     run = True
-                    #start = multiplayerSubOptions()
 
                     return screenName, single, run
 
@@ -658,12 +657,12 @@ def multiplayerSubOptions():
                 # Start game
                 if SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 <= mouse[1] <= SCREEN_HEIGHT / 2 + 40:
                     start = False
-                    input_ip = socket.gethostname()
                     return start, input_ip
 
                 # Join game
                 elif SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 - 80 <= mouse[1] <= SCREEN_HEIGHT / 2 - 40:
                     start = True
+                    # input_ip = socket.gethostname()
                     return start, input_ip
 
                     # fills the screen with a color
@@ -752,14 +751,16 @@ if __name__ == "__main__":
         Pai.set_grid(gridCord)
     else:
         server, ip_address = multiplayerSubOptions()
-        print(ip_address)
 
         if server:
             t1 = threading.Thread(target=startServer, name='t1')
             t1.start()
-            n = Network(socket.gethostname())
+            n = Network(socket.gethostbyname_ex(socket.gethostname())[-1][0])
         else:
+            ip_address = ip_address.lstrip()
+            ip_address = ip_address.rstrip()
             n = Network(ip_address)
+
         player = n.getP()
         print("you are player: ", player)
         screenName = n.receive()
