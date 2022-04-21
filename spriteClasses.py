@@ -30,3 +30,6 @@ class Sprite(pygame.sprite.Sprite):
 
     def getStartLoc(self):
         return self.startLoc
+
+    def get_name(self):
+        return self.ship_name
