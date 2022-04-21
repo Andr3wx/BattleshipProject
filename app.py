@@ -658,13 +658,12 @@ def multiplayerSubOptions():
                 # Start game
                 if SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 <= mouse[1] <= SCREEN_HEIGHT / 2 + 40:
                     start = False
+                    input_ip = socket.gethostname()
                     return start, input_ip
 
                 # Join game
                 elif SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 - 80 <= mouse[1] <= SCREEN_HEIGHT / 2 - 40:
                     start = True
-                    input_ip = socket.gethostname()
-                    print(input_ip)
                     return start, input_ip
 
                     # fills the screen with a color
@@ -750,7 +749,6 @@ if __name__ == "__main__":
         Pai = ai.Player()
         n = False
         gridCord = drawGrid()
-        # print(gridCord)
         Pai.set_grid(gridCord)
     else:
         server, ip_address = multiplayerSubOptions()
@@ -759,16 +757,12 @@ if __name__ == "__main__":
         if server:
             t1 = threading.Thread(target=startServer, name='t1')
             t1.start()
-
-        n = Network(ip_address)
-    # n.send("Check")
+            n = Network(socket.gethostname())
+        else:
+            n = Network(ip_address)
         player = n.getP()
         print("you are player: ", player)
         screenName = n.receive()
-
-    #n = False
-    # print(screenName)
-    # n.send("Test")
 
     # create ship objects
     img_X = SCREEN_WIDTH * .65
@@ -787,16 +781,11 @@ if __name__ == "__main__":
                destroyer: [-1, -1], carrier: [-1, -1]}
     opposingShipPos = {}
 
-    # if ai:
-    #     Pai = ai.Player()
-    # else:
-    #     is_ai = False
     if gameType:
         Pai.place_ships(block())
         opposingShipPos = Pai.get_ship_locations()
 
     while running:
-       # print('Player Ships: ', shipPos)
         #  Placing ships
         if screenName == "Placing Ships":
             if gameType == False:
@@ -806,18 +795,12 @@ if __name__ == "__main__":
 
                 canPlace, running, gridCord, currentSprite, shipPos, screenName, opposingShipPos = moveShipScreen(
                     canPlace, running, gridCord, currentSprite, shipPos, n, screenName, opposingShipPos, gameType)
-                # Pai.set_grid(gridCord)
-                # Pai.place_ships(block())
-                # opposingShipPos = Pai.get_ship_locations()
 
         elif screenName == "Taking Shot":
-            print(shipPos)
-            # break
             if gameType == True:
 
                 running, gridCord, click, screenName, hitCount = takeShotScreen(running, gridCord, click, n, screenName,
                                                                                 opposingShipPos, hitCount, gameType)
-                #gridCord = Pai.make_decision()
             else:
                 running, gridCord, click, screenName, hitCount = takeShotScreen(running, gridCord, click, n, screenName,
                                                                                 opposingShipPos, hitCount, gameType)
