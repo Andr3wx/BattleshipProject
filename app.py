@@ -120,7 +120,8 @@ def getRectCoord(cord, locationGrid):
     tempCol = float(-1)
 
     for x in locationGrid:  # Loops through keys ( Row values )
-        if float(x) > float(cord[0]):  # Once finds key value greater than mouse position
+        # Once finds key value greater than mouse position
+        if float(x) > float(cord[0]):
             break  # Ends loop and temp key has previous position
         tempKey = float(x)
     if tempKey != -1:  # Make sure it finds valid location
@@ -455,6 +456,7 @@ def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run, gameType):
 
     return screenN, run
 
+
 def getShipStr(x):
     if x == corvette:
         return 'corvette'
@@ -563,10 +565,12 @@ def mainMenu():
     quitText = smallfont.render('quit', True, black)
     playSingle = smallfont.render('single player', True, black)
     playMulti = smallfont.render('multiplayer', True, black)
+    bg = pygame.image.load('images/menuBackground.jpg')
+    screen.blit(bg, (0, 0))
 
     while True:
 
-        screen.fill((60, 25, 60))
+        #screen.fill((60, 25, 60))
 
         # stores the (x,y) coordinates into
         # the variable as a tuple
@@ -604,8 +608,6 @@ def mainMenu():
                 # fills the screen with a color
 
                 #bg = pygame.image.load(r'menuBackground.jpg')
-                bg = pygame.image.load('images/menuBackground.jpg')
-                screen.blit(bg,(0,0))
 
         # if mouse is hovered on a button it
         # changes to lighter shade
@@ -655,6 +657,8 @@ def multiplayerSubOptions():
     # this font
     startGame = smallfont.render('Start Game', True, black)
     joinGame = smallfont.render('Join game', True, black)
+    bg = pygame.image.load('images/menuBackground.jpg')
+    screen.blit(bg, (0, 0))
 
     input_rect = pygame.Rect(SCREEN_WIDTH / 2 +
                              20, SCREEN_HEIGHT / 2 - 40, 140, 32)
@@ -665,8 +669,6 @@ def multiplayerSubOptions():
         # stores the (x,y) coordinates into
         # the variable as a tuple
         mouse = pygame.mouse.get_pos()
-        # fills the screen with a color
-        screen.fill((60, 25, 60))
 
         for ev in pygame.event.get():
             # checks if a mouse is clicked
@@ -686,7 +688,6 @@ def multiplayerSubOptions():
                     return start, input_ip
 
                     # fills the screen with a color
-                screen.fill((60, 25, 60))
 
                 # if mouse is hovered on a button it
                 # changes to lighter shade
@@ -709,6 +710,7 @@ def multiplayerSubOptions():
                         screen, lightBlue, [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 80, 180, 40])
 
                 pygame.draw.rect(screen, white, input_rect)
+
                 # superimposing the text onto our button
                 screen.blit(joinGame, (SCREEN_WIDTH /
                             2 + 20, SCREEN_HEIGHT / 2))
@@ -762,7 +764,6 @@ def hit_counter(ship_name):
         hit_count[3] += 1
         if hit_count[3] == 5:
             ship_group_layered.remove(carrier)
-
 
 
 if __name__ == "__main__":
