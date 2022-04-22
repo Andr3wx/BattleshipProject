@@ -603,7 +603,8 @@ def mainMenu():
 
                 # fills the screen with a color
 
-                bg = pygame.image.load(r'menuBackground.jpg')
+                #bg = pygame.image.load(r'menuBackground.jpg')
+                bg = pygame.image.load('images/menuBackground.jpg')
                 screen.blit(bg,(0,0))
 
         # if mouse is hovered on a button it
