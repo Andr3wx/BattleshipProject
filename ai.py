@@ -13,7 +13,6 @@ class Player:
         return self.shipLocations
 
     def set_grid(self, grid):
-        print(grid)
         self.grid = grid
 
     def place_ships(self, block):

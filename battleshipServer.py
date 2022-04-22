@@ -26,14 +26,12 @@ def handle_client(connection, player):
     print('done')
     if player == 0:
         connection.send('Taking Shot'.encode())
-        print(completeSetup[1])
         time.sleep(1)
         connection.send(completeSetup[1].encode())
         time.sleep(1)
     else:
         connection.send('Other Player'.encode())
         time.sleep(1)
-        print(completeSetup[0])
         connection.send(completeSetup[0].encode())
         time.sleep(1)
 

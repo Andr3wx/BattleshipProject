@@ -118,14 +118,15 @@ def checkIfGrid(position, locationGrid):
 def getRectCoord(cord, locationGrid):
     tempKey = float(-1)
     tempCol = float(-1)
+
     for x in locationGrid:  # Loops through keys ( Row values )
-        if float(x) > cord[0]:  # Once finds key value greater than mouse position
+        if float(x) > float(cord[0]):  # Once finds key value greater than mouse position
             break  # Ends loop and temp key has previous position
         tempKey = float(x)
     if tempKey != -1:  # Make sure it finds valid location
         temp = locationGrid[str(tempKey)]
         for x in temp:  # Loops through columns in similar fashion as keys above
-            if x > cord[1]:
+            if x > float(cord[1]):
                 break
             tempCol = x
     return [tempKey, tempCol]
@@ -298,7 +299,6 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN, oth
         allowToPlace, shipLoc = shipHighlight(pos, grid, curSprite, shipLoc)
 
     allPlaced = True
-    # print(shipLoc)
     for x in shipLoc:
         temp = shipLoc[x]
         if temp[0] == -1 or temp[1] == -1:
@@ -311,17 +311,11 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN, oth
         # time.sleep(1)
             screenN = network.receive()
             otherPlayerShips = network.receive()
-            print(otherPlayerShips)
             otherPlayerShips = convertStrToShip(otherPlayerShips)
-            print(otherPlayerShips)
             return placing, run, grid, curSprite, shipLoc, screenN, otherPlayerShips
         else:
             screenN = "Taking Shot"
             return placing, run, grid, curSprite, shipLoc, screenN, otherPlayerShips
-
-        print(screenN)
-
-        # print(screenN)
 
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
@@ -331,7 +325,6 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN, oth
             if placing:
                 placingShipsRelease(pos, grid, curSprite, allowToPlace)
                 placing = False
-            # print(checkIfGrid(pos, grid)[0], checkIfGrid(pos, grid)[1])
         elif event.type == pygame.MOUSEBUTTONDOWN:
             curSprite = placingShips(pos)
             if curSprite is not None:
@@ -364,11 +357,9 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWi
             if checkIfGrid(pos, grid)[0] != -1 and checkIfGrid(pos, grid)[1] != -1:
                 exactSpot = str(getRectCoord(pos, grid)[
                                 0]) + ',' + str(getRectCoord(pos, grid)[1])
-                # print(otherPlayerShips)
                 is_hit = checkIfHitOther(
                     otherPlayerShips, getRectCoord(pos, grid))
                 if gameType == True:
-                    # Pai.set_hit(is_hit)
                     screenN = 'Other Player'
                 else:
 
@@ -423,6 +414,7 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWi
 
 
 def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run, gameType):
+    is_hit = True
     drawGrid()
     ship_group_layered.draw(screen)
     pygame.display.update()
@@ -433,28 +425,45 @@ def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run, gameType):
     shotSpot = []
     if not gameType:
         getShot = network.receive()
-        # print(getShot)
         getShot = getShot.split(',')
         shotSpot.append(float(getShot[0]))
         shotSpot.append(float(getShot[1]))
-        print(shotSpot[0], "     ", shotSpot[1])
     else:
         getShot = Pai.make_decision()
-        print(getShot)
         shotSpot.append(float(getShot[0]))
         shotSpot.append(float(getShot[1]))
-    rect = pygame.Rect(shotSpot[0], shotSpot[1], block(), block())
-    pygame.draw.rect(screen, red, rect)  # Highlights given box
-    pygame.draw.rect(screen, black, rect, 1)
+
+    # pass in correct ship locations for player not other player
+    getShot[0] = float(getShot[0])
+    getShot[1] = float(getShot[1])
+    is_hit = checkIfHitOther(shipLoc, getShot)
+
+    if is_hit:
+        hit = Hit_Miss('hit')
+        hit.set_location(getShot)
+        my_hit_miss_group_layered.add(hit)
+        my_hit_miss_group_layered.draw(screen)
+    else:
+        miss = Hit_Miss('miss')
+        miss.set_location(getShot)
+        my_hit_miss_group_layered.add(miss)
+        my_hit_miss_group_layered.draw(screen)
+
     pygame.display.update()
     time.sleep(3)
     screenN = 'Taking Shot'
-    # print(screenN)
 
-    # counter += 1
-    # if counter == 20:
-    #     screenN = 'Placing Ships'
     return screenN, run
+
+def getShipStr(x):
+    if x == corvette:
+        return 'corvette'
+    elif x == sub:
+        return 'sub'
+    elif x == destroyer:
+        return 'destroyer'
+    elif x == carrier:
+        return 'carrier'
 
 
 def convertShipToStr(shipLoc):
@@ -502,30 +511,37 @@ def convertStrToShip(strShips):
 
 # Parameter is the other player ship location dict
 def checkIfHitOther(shipDic, shotPos):
-    # print(shipDic)
+    other = False
+    if screenName == 'Other Player':
+        other = True
     for x in shipDic:
         temp = shipDic[x]
-        # print(temp)
         if len(temp) > 1:
             temp1 = temp[0]     # Beginning ship coordinates
             temp2 = temp[1]     # End ships coordinates
             # If y coordinates are the same for ship location and shot location
-            print('Ship beginning row coordinate: ', temp1[1])
-            print('Shot row coordinate: ', shotPos[1])
-            print('Ship end row coordinate: ', )
             if temp1[1] == shotPos[1]:
-                print('in')
+                if other:
+                    x = getShipStr(x)
                 if x == 'corvette':
                     if temp1[0] <= shotPos[0] <= temp2[0]:
+                        if other:
+                            hit_counter(x)
                         return True
                 elif x == 'sub':
                     if temp1[0] <= shotPos[0] <= temp2[0]:
+                        if other:
+                            hit_counter(x)
                         return True
                 elif x == 'destroyer':
                     if temp1[0] <= shotPos[0] <= temp2[0]:
+                        if other:
+                            hit_counter(x)
                         return True
                 elif x == 'carrier':
                     if temp1[0] <= shotPos[0] <= temp2[0]:
+                        if other:
+                            hit_counter(x)
                         return True
     return False
 
@@ -724,6 +740,27 @@ def multiplayerSubOptions():
                 pygame.display.update()
 
 
+def hit_counter(ship_name):
+    print("Ship Name", ship_name)
+    if ship_name == 'corvette':
+        hit_count[0] += 1
+        if hit_count[0] == 2:
+            ship_group_layered.remove(corvette)
+    elif ship_name == 'sub':
+        hit_count[1] += 1
+        if hit_count[1] == 3:
+            ship_group_layered.remove(sub)
+    elif ship_name == 'destroyer':
+        hit_count[2] += 1
+        if hit_count[2] == 4:
+            ship_group_layered.remove(destroyer)
+    else:
+        hit_count[3] += 1
+        if hit_count[3] == 5:
+            ship_group_layered.remove(carrier)
+
+
+
 if __name__ == "__main__":
     counter = 0
     running = True
@@ -735,6 +772,9 @@ if __name__ == "__main__":
     screenName = "Placing Ships"
     server = False
     ip_address = ' '
+
+    # count tracker for hits on ships
+    hit_count = [0, 0, 0, 0]
 
     pygame.init()  # initialize pygame
     screen = pygame.display.set_mode(
@@ -755,10 +795,10 @@ if __name__ == "__main__":
         if server:
             t1 = threading.Thread(target=startServer, name='t1')
             t1.start()
+            print("started")
             n = Network(socket.gethostname())
         else:
             ip_address = ip_address.lstrip()
-            ip_address = ip_address.rstrip()
             n = Network(ip_address)
 
         player = n.getP()
@@ -777,6 +817,7 @@ if __name__ == "__main__":
         [corvette, sub, destroyer, carrier])
     # Group of Hit and Miss instances
     hit_miss_group_layered = pygame.sprite.LayeredUpdates([])
+    my_hit_miss_group_layered = pygame.sprite.LayeredUpdates([])
 
     shipPos = {corvette: [-1, -1], sub: [-1, -1],
                destroyer: [-1, -1], carrier: [-1, -1]}
