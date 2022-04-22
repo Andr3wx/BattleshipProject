@@ -586,19 +586,19 @@ def mainMenu():
 
                 # if the mouse is clicked on the
                 # button the game is terminated
-                if SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 <= mouse[1] <= SCREEN_HEIGHT / 2 + 40:
+                if SCREEN_WIDTH / 2 -60<= mouse[0] <= SCREEN_WIDTH / 2 + 120 and SCREEN_HEIGHT / 2 <= mouse[1] <= SCREEN_HEIGHT / 2 + 40:
                     run = False
                     screenName = "Placing Ships"
                     single = True
                     return screenName, single, run
 
-                elif SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 - 80 <= mouse[1] <= SCREEN_HEIGHT / 2 - 40:
+                elif SCREEN_WIDTH / 2 -60<= mouse[0] <= SCREEN_WIDTH / 2 + 120 and SCREEN_HEIGHT / 2 - 80 <= mouse[1] <= SCREEN_HEIGHT / 2 - 40:
                     screenName = "Placing Ships"
                     single = True
                     run = True
                     return screenName, single, run
 
-                elif SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 - 40 <= mouse[1] <= SCREEN_HEIGHT / 2:
+                elif SCREEN_WIDTH / 2 -60<= mouse[0] <= SCREEN_WIDTH / 2 + 120 and SCREEN_HEIGHT / 2 - 40 <= mouse[1] <= SCREEN_HEIGHT / 2:
                     screenName = "Placing Ships"
                     single = False
                     run = True
@@ -611,35 +611,35 @@ def mainMenu():
 
         # if mouse is hovered on a button it
         # changes to lighter shade
-        if SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 <= mouse[1] <= SCREEN_HEIGHT / 2 + 40:
+        if SCREEN_WIDTH / 2 -60<= mouse[0] <= SCREEN_WIDTH / 2 + 120 and SCREEN_HEIGHT / 2 <= mouse[1] <= SCREEN_HEIGHT / 2 + 40:
             pygame.draw.rect(screen, white, [
-                             SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 180, 40])
+                             SCREEN_WIDTH / 2-60, SCREEN_HEIGHT / 2, 180, 40])
 
         else:
             pygame.draw.rect(screen, lightBlue, [
-                             SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 180, 40])
+                             SCREEN_WIDTH / 2-60, SCREEN_HEIGHT / 2, 180, 40])
 
-        if SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 - 80 <= mouse[1] <= SCREEN_HEIGHT / 2 - 40:
+        if SCREEN_WIDTH / 2 -60<= mouse[0] <= SCREEN_WIDTH / 2 + 120 and SCREEN_HEIGHT / 2 - 80 <= mouse[1] <= SCREEN_HEIGHT / 2 - 40:
             pygame.draw.rect(screen, white, [
-                             SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 80, 180, 40])
+                             SCREEN_WIDTH / 2-60, SCREEN_HEIGHT / 2 - 80, 180, 40])
 
         else:
             pygame.draw.rect(screen, lightBlue, [
-                             SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 80, 180, 40])
+                             SCREEN_WIDTH / 2-60, SCREEN_HEIGHT / 2 - 80, 180, 40])
 
         if SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 - 40 <= mouse[1] <= SCREEN_HEIGHT / 2:
             pygame.draw.rect(screen, white, [
-                             SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 40, 180, 40])
+                             SCREEN_WIDTH / 2-60, SCREEN_HEIGHT / 2 - 40, 180, 40])
 
         else:
             pygame.draw.rect(screen, lightBlue, [
-                             SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 40, 180, 40])
+                             SCREEN_WIDTH / 2-60, SCREEN_HEIGHT / 2 - 40, 180, 40])
 
             # superimposing the text onto our button
-        screen.blit(quitText, (SCREEN_WIDTH / 2 + 20, SCREEN_HEIGHT / 2))
+        screen.blit(quitText, (SCREEN_WIDTH / 2 - 60, SCREEN_HEIGHT / 2))
         screen.blit(playSingle, (SCREEN_WIDTH /
-                    2 + 20, SCREEN_HEIGHT / 2 - 80))
-        screen.blit(playMulti, (SCREEN_WIDTH / 2 + 20, SCREEN_HEIGHT / 2 - 40))
+                    2 - 60, SCREEN_HEIGHT / 2 - 80))
+        screen.blit(playMulti, (SCREEN_WIDTH / 2 - 60, SCREEN_HEIGHT / 2 - 40))
 
         # updates the frames of the game
         pygame.display.update()
@@ -677,12 +677,12 @@ def multiplayerSubOptions():
                 # if the mouse is clicked on the
                 # button the game is terminated
                 # Start game
-                if SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 <= mouse[1] <= SCREEN_HEIGHT / 2 + 40:
+                if SCREEN_WIDTH / 2 -60<= mouse[0] <= SCREEN_WIDTH / 2 + 120 and SCREEN_HEIGHT / 2 <= mouse[1] <= SCREEN_HEIGHT / 2 + 40:
                     start = False
                     return start, input_ip
 
                 # Join game
-                elif SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 - 80 <= mouse[1] <= SCREEN_HEIGHT / 2 - 40:
+                elif SCREEN_WIDTH / 2 -60<= mouse[0] <= SCREEN_WIDTH / 2 + 120 and SCREEN_HEIGHT / 2 - 80 <= mouse[1] <= SCREEN_HEIGHT / 2 - 40:
                     start = True
                     # input_ip = socket.gethostname()
                     return start, input_ip
@@ -692,31 +692,31 @@ def multiplayerSubOptions():
                 # if mouse is hovered on a button it
                 # changes to lighter shade
                 # Start game
-                if SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 <= mouse[1] <= SCREEN_HEIGHT / 2 + 40:
+                if SCREEN_WIDTH / 2 -60<= mouse[0] <= SCREEN_WIDTH / 2 + 120 and SCREEN_HEIGHT / 2 <= mouse[1] <= SCREEN_HEIGHT / 2 + 40:
                     pygame.draw.rect(
-                        screen, white, [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 180, 40])
+                        screen, white, [SCREEN_WIDTH / 2-60, SCREEN_HEIGHT / 2, 180, 40])
 
                 else:
                     pygame.draw.rect(
-                        screen, lightBlue, [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 180, 40])
+                        screen, lightBlue, [SCREEN_WIDTH / 2-60, SCREEN_HEIGHT / 2, 180, 40])
 
                 # Join game
-                if SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 - 80 <= mouse[1] <= SCREEN_HEIGHT / 2 - 40:
+                if SCREEN_WIDTH / 2 -60<= mouse[0] <= SCREEN_WIDTH / 2 + 120 and SCREEN_HEIGHT / 2 - 80 <= mouse[1] <= SCREEN_HEIGHT / 2 - 40:
                     pygame.draw.rect(
-                        screen, white, [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 80, 180, 40])
+                        screen, white, [SCREEN_WIDTH / 2-60, SCREEN_HEIGHT / 2 - 80, 180, 40])
 
                 else:
                     pygame.draw.rect(
-                        screen, lightBlue, [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 80, 180, 40])
+                        screen, lightBlue, [SCREEN_WIDTH / 2-60, SCREEN_HEIGHT / 2 - 80, 180, 40])
 
                 pygame.draw.rect(screen, white, input_rect)
 
                 # superimposing the text onto our button
                 screen.blit(joinGame, (SCREEN_WIDTH /
-                            2 + 20, SCREEN_HEIGHT / 2))
+                            2 - 60, SCREEN_HEIGHT / 2))
 
-                screen.blit(startGame, (SCREEN_WIDTH / 2 +
-                            20, SCREEN_HEIGHT / 2 - 80))
+                screen.blit(startGame, (SCREEN_WIDTH / 2 -
+                            60, SCREEN_HEIGHT / 2 - 80))
 
                 # updates the frames of the game
                 pygame.display.update()
@@ -729,19 +729,19 @@ def multiplayerSubOptions():
 
                 pygame.draw.rect(screen, white, input_rect)
                 text_surface = smallfont.render(input_ip, True, black)
-                screen.blit(text_surface, (SCREEN_WIDTH / 2 +
-                                           20, SCREEN_HEIGHT / 2 - 40))
-                if SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 <= mouse[
+                screen.blit(text_surface, (SCREEN_WIDTH / 2 -
+                                           60, SCREEN_HEIGHT / 2 - 40))
+                if SCREEN_WIDTH / 2-60 <= mouse[0] <= SCREEN_WIDTH / 2 + 120 and SCREEN_HEIGHT / 2 <= mouse[
                         1] <= SCREEN_HEIGHT / 2 + 40:
                     pygame.draw.rect(
-                        screen, white, [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 180, 40])
+                        screen, white, [SCREEN_WIDTH / 2-60, SCREEN_HEIGHT / 2, 180, 40])
 
                 else:
                     pygame.draw.rect(
-                        screen, lightBlue, [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 180, 40])
+                        screen, lightBlue, [SCREEN_WIDTH / 2-60, SCREEN_HEIGHT / 2, 180, 40])
 
                 screen.blit(joinGame, (SCREEN_WIDTH /
-                                       2 + 20, SCREEN_HEIGHT / 2))
+                                       2 - 60, SCREEN_HEIGHT / 2))
                 input_rect.w = max(100, text_surface.get_width() + 10)
                 pygame.display.update()
 
