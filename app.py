@@ -603,6 +603,9 @@ def mainMenu():
 
                 # fills the screen with a color
 
+                bg = pygame.image.load(r'menuBackground.jpg')
+                screen.blit(bg,(0,0))
+
         # if mouse is hovered on a button it
         # changes to lighter shade
         if SCREEN_WIDTH / 2 <= mouse[0] <= SCREEN_WIDTH / 2 + 140 and SCREEN_HEIGHT / 2 <= mouse[1] <= SCREEN_HEIGHT / 2 + 40:
