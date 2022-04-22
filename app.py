@@ -550,7 +550,15 @@ def checkIfHitOther(shipDic, shotPos):
 
 def checkIfMultWin(hitCount):
     if hitCount == 14:
+        win = "You Win!"
+        blockSize = block()
+        img_X = SCREEN_WIDTH * .80
+        font = pygame.font.SysFont('arial', int(blockSize * .4330127))
+        text = font.render(win, True, lightBlue)
+        screen.blit(text, (img_X, SCREEN_HEIGHT * 0.4))
+        pygame.display.update()
         return True
+
     else:
         return False
 
