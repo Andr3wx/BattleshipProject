@@ -293,7 +293,7 @@ def shipIsHeld(position, sprite):
     pygame.display.update()
 
 
-def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN, otherPlayerShips, gameType):
+def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN, otherPlayerShips, gameType, IP):
     pos = pygame.mouse.get_pos()
     if placing:
         shipIsHeld(pos, curSprite)
@@ -340,8 +340,17 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN, oth
     screen.fill(black)
     if len(grid.keys()) <= 0:
         grid = drawGrid()
+
         ship_group_layered.draw(screen)
+
         pygame.display.update()
+    if gameType == False:
+
+        font = pygame.font.SysFont('Corbel', 35)
+        ipt = network.getIP()
+        text = font.render(ipt, True, lightBlue)
+        screen.blit(text, (SCREEN_WIDTH * 0.4, SCREEN_HEIGHT * 0.01))
+        # pygame.display.update()
 
     return placing, run, grid, curSprite, shipLoc, screenN, otherPlayerShips
 
@@ -594,19 +603,19 @@ def mainMenu():
 
                 # if the mouse is clicked on the
                 # button the game is terminated
-                if SCREEN_WIDTH / 2 -60<= mouse[0] <= SCREEN_WIDTH / 2 + 120 and SCREEN_HEIGHT / 2 <= mouse[1] <= SCREEN_HEIGHT / 2 + 40:
+                if SCREEN_WIDTH / 2 - 60 <= mouse[0] <= SCREEN_WIDTH / 2 + 120 and SCREEN_HEIGHT / 2 <= mouse[1] <= SCREEN_HEIGHT / 2 + 40:
                     run = False
                     screenName = "Placing Ships"
                     single = True
                     return screenName, single, run
 
-                elif SCREEN_WIDTH / 2 -60<= mouse[0] <= SCREEN_WIDTH / 2 + 120 and SCREEN_HEIGHT / 2 - 80 <= mouse[1] <= SCREEN_HEIGHT / 2 - 40:
+                elif SCREEN_WIDTH / 2 - 60 <= mouse[0] <= SCREEN_WIDTH / 2 + 120 and SCREEN_HEIGHT / 2 - 80 <= mouse[1] <= SCREEN_HEIGHT / 2 - 40:
                     screenName = "Placing Ships"
                     single = True
                     run = True
                     return screenName, single, run
 
-                elif SCREEN_WIDTH / 2 -60<= mouse[0] <= SCREEN_WIDTH / 2 + 120 and SCREEN_HEIGHT / 2 - 40 <= mouse[1] <= SCREEN_HEIGHT / 2:
+                elif SCREEN_WIDTH / 2 - 60 <= mouse[0] <= SCREEN_WIDTH / 2 + 120 and SCREEN_HEIGHT / 2 - 40 <= mouse[1] <= SCREEN_HEIGHT / 2:
                     screenName = "Placing Ships"
                     single = False
                     run = True
@@ -619,7 +628,7 @@ def mainMenu():
 
         # if mouse is hovered on a button it
         # changes to lighter shade
-        if SCREEN_WIDTH / 2 -60<= mouse[0] <= SCREEN_WIDTH / 2 + 120 and SCREEN_HEIGHT / 2 <= mouse[1] <= SCREEN_HEIGHT / 2 + 40:
+        if SCREEN_WIDTH / 2 - 60 <= mouse[0] <= SCREEN_WIDTH / 2 + 120 and SCREEN_HEIGHT / 2 <= mouse[1] <= SCREEN_HEIGHT / 2 + 40:
             pygame.draw.rect(screen, white, [
                              SCREEN_WIDTH / 2-60, SCREEN_HEIGHT / 2, 180, 40])
 
@@ -627,7 +636,7 @@ def mainMenu():
             pygame.draw.rect(screen, lightBlue, [
                              SCREEN_WIDTH / 2-60, SCREEN_HEIGHT / 2, 180, 40])
 
-        if SCREEN_WIDTH / 2 -60<= mouse[0] <= SCREEN_WIDTH / 2 + 120 and SCREEN_HEIGHT / 2 - 80 <= mouse[1] <= SCREEN_HEIGHT / 2 - 40:
+        if SCREEN_WIDTH / 2 - 60 <= mouse[0] <= SCREEN_WIDTH / 2 + 120 and SCREEN_HEIGHT / 2 - 80 <= mouse[1] <= SCREEN_HEIGHT / 2 - 40:
             pygame.draw.rect(screen, white, [
                              SCREEN_WIDTH / 2-60, SCREEN_HEIGHT / 2 - 80, 180, 40])
 
@@ -809,7 +818,9 @@ if __name__ == "__main__":
             t1 = threading.Thread(target=startServer, name='t1')
             t1.start()
             print("started")
+
             n = Network(socket.gethostname())
+
         else:
             ip_address = ip_address.lstrip()
             n = Network(ip_address)
@@ -845,7 +856,7 @@ if __name__ == "__main__":
         if screenName == "Placing Ships":
             if gameType == False:
                 canPlace, running, gridCord, currentSprite, shipPos, screenName, opposingShipPos = moveShipScreen(
-                    canPlace, running, gridCord, currentSprite, shipPos, n, screenName, opposingShipPos, gameType)
+                    canPlace, running, gridCord, currentSprite, shipPos, n, screenName, opposingShipPos, gameType, ip_address)
             if gameType == True:
 
                 canPlace, running, gridCord, currentSprite, shipPos, screenName, opposingShipPos = moveShipScreen(

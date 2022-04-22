@@ -22,6 +22,7 @@ class Network:
                 break
 
         self.server = ip_address
+
         self.port = 5555
         self.addr = (self.server, self.port)
         self.client.connect(self.addr)
@@ -53,3 +54,6 @@ class Network:
 
         except socket.error as e:
             print(e)
+
+    def getIP(self):
+        return self.server
