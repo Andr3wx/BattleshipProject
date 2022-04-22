@@ -15,7 +15,6 @@ class Hit_Miss(pygame.sprite.Sprite):
 class Sprite(pygame.sprite.Sprite):
     def __init__(self, ship_name, pos_x, pos_y):
         super().__init__()
-        self.ship_name = ship_name
         self.original_pos = (pos_x, pos_y)
         self.image = pygame.image.load('images/' + ship_name + '.png')
         self.rect = self.image.get_rect()
@@ -25,11 +24,5 @@ class Sprite(pygame.sprite.Sprite):
     def set_location(self, new_pos):
         self.rect.center = [new_pos[0], new_pos[1]]
 
-    def remove(self):
-        self.rect.center = self.original_pos
-
     def getStartLoc(self):
         return self.startLoc
-
-    def get_name(self):
-        return self.ship_name

@@ -741,27 +741,23 @@ def multiplayerSubOptions():
 
 
 def hit_counter(ship_name):
-    corvette_count = 0
-    sub_count = 0
-    destroyer_count = 0
-    carrier_count = 0
-
+    print("Ship Name", ship_name)
     if ship_name == 'corvette':
-        corvette_count += 1
-        if corvette_count == 2:
-            corvette.remove()
+        hit_count[0] += 1
+        if hit_count[0] == 2:
+            ship_group_layered.remove(corvette)
     elif ship_name == 'sub':
-        sub_count += 1
-        if sub_count == 3:
-            sub.remove()
+        hit_count[1] += 1
+        if hit_count[1] == 3:
+            ship_group_layered.remove(sub)
     elif ship_name == 'destroyer':
-        destroyer_count += 1
-        if destroyer_count == 4:
-            destroyer.remove()
+        hit_count[2] += 1
+        if hit_count[2] == 4:
+            ship_group_layered.remove(destroyer)
     else:
-        carrier_count += 1
-        if carrier_count == 5:
-            carrier.remove()
+        hit_count[3] += 1
+        if hit_count[3] == 5:
+            ship_group_layered.remove(carrier)
 
 
 
@@ -776,6 +772,9 @@ if __name__ == "__main__":
     screenName = "Placing Ships"
     server = False
     ip_address = ' '
+
+    # count tracker for hits on ships
+    hit_count = [0, 0, 0, 0]
 
     pygame.init()  # initialize pygame
     screen = pygame.display.set_mode(
