@@ -120,7 +120,8 @@ def getRectCoord(cord, locationGrid):
     tempCol = float(-1)
 
     for x in locationGrid:  # Loops through keys ( Row values )
-        if float(x) > float(cord[0]):  # Once finds key value greater than mouse position
+        # Once finds key value greater than mouse position
+        if float(x) > float(cord[0]):
             break  # Ends loop and temp key has previous position
         tempKey = float(x)
     if tempKey != -1:  # Make sure it finds valid location
@@ -455,6 +456,7 @@ def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run, gameType):
 
     return screenN, run
 
+
 def getShipStr(x):
     if x == corvette:
         return 'corvette'
@@ -548,7 +550,15 @@ def checkIfHitOther(shipDic, shotPos):
 
 def checkIfMultWin(hitCount):
     if hitCount == 14:
+        win = "You Win!"
+        blockSize = block()
+        img_X = SCREEN_WIDTH * .65
+        font = pygame.font.SysFont('arial', int(blockSize * .4330127))
+        text = font.render(win, True, lightBlue)
+        screen.blit(text, img_X, SCREEN_HEIGHT * 0.4)
+        pygame.display.update()
         return True
+
     else:
         return False
 
@@ -758,7 +768,6 @@ def hit_counter(ship_name):
         hit_count[3] += 1
         if hit_count[3] == 5:
             ship_group_layered.remove(carrier)
-
 
 
 if __name__ == "__main__":
