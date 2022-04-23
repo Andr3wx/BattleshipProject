@@ -56,4 +56,4 @@ class Network:
             print(e)
 
     def getIP(self):
-        return self.server
+        return self.server[-1]

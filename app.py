@@ -293,7 +293,7 @@ def shipIsHeld(position, sprite):
     pygame.display.update()
 
 
-def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN, otherPlayerShips, gameType, IP):
+def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN, otherPlayerShips, gameType):
     pos = pygame.mouse.get_pos()
     if placing:
         shipIsHeld(pos, curSprite)
@@ -344,12 +344,13 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN, oth
         ship_group_layered.draw(screen)
 
         pygame.display.update()
-    if gameType == False:
+    if gameType == False and int(network.getP()) == 0:
 
         font = pygame.font.SysFont('Corbel', 35)
-        ipt = network.getIP()
+        ipt = "Enter This IP to Connect: " + \
+            str(socket.gethostbyname_ex(socket.gethostname())[-1][1])
         text = font.render(ipt, True, lightBlue)
-        screen.blit(text, (SCREEN_WIDTH * 0.4, SCREEN_HEIGHT * 0.01))
+        screen.blit(text, (SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.01))
         # pygame.display.update()
 
     return placing, run, grid, curSprite, shipLoc, screenN, otherPlayerShips
@@ -386,10 +387,12 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWi
                 if checkIfMultWin(hitWinCount):
                     if gameType == False:
                         print("Player: ", network.getP(), " Wins!")
+
                         run = False
                     else:
                         print("You Win!")
                         run = False
+
                 positionHit = getRectCoord(pos, grid)
                 hit.set_location(positionHit)
                 hit_miss_group_layered.add(hit)
@@ -400,6 +403,7 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWi
             else:
                 drawGrid()
                 miss = Hit_Miss("miss")
+
                 positionMiss = getRectCoord(pos, grid)
                 miss.set_location(positionMiss)
                 hit_miss_group_layered.add(miss)
@@ -435,6 +439,7 @@ def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run, gameType):
     shotSpot = []
     if not gameType:
         getShot = network.receive()
+
         getShot = getShot.split(',')
         shotSpot.append(float(getShot[0]))
         shotSpot.append(float(getShot[1]))
@@ -856,7 +861,7 @@ if __name__ == "__main__":
         if screenName == "Placing Ships":
             if gameType == False:
                 canPlace, running, gridCord, currentSprite, shipPos, screenName, opposingShipPos = moveShipScreen(
-                    canPlace, running, gridCord, currentSprite, shipPos, n, screenName, opposingShipPos, gameType, ip_address)
+                    canPlace, running, gridCord, currentSprite, shipPos, n, screenName, opposingShipPos, gameType)
             if gameType == True:
 
                 canPlace, running, gridCord, currentSprite, shipPos, screenName, opposingShipPos = moveShipScreen(
