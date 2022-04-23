@@ -38,5 +38,18 @@ A few important notes:
 * The multiplayer will not work on FSUSecure, has not been tested on other FSU Wifi, look in the terminal for connected messages on player 1's terminal.
 * In order to enter the multiplayer menu you must click the button twice.
 * Unless on the menu screen, press the ESC key to close the game.
+* If one player is a Apple user, it is better for them to create the game as if a Apple computer tries to join a Windows game there is often times connection issues.
+
+
+
+Citations and Links:
+    Images used:
+        https://depositphotos.com/75534743/stock-illustration-militaristic-ships-icons.html
+        https://www.freeiconspng.com/img/9151
+        https://www.iconsdb.com/red-icons/x-mark-icon.html
+        https://www.google.com/url?sa=i&url=https%3A%2F%2Ffineartamerica.com%2Ffeatured%2Fworld-war-two-battleship-cartoon-aloysius-patrimonio.html%3Fproduct%3Dgreeting-card&psig=AOvVaw31YQFuJR4EEmqYCt8NNbG2&ust=1650741385150000&source=images&cd=vfe&ved=0CAwQjRxqFwoTCIja14CxqPcCFQAAAAAdAAAAABAT
+
+    Code snippets for menu functions:
+        https://www.geeksforgeeks.org/creating-start-menu-in-pygame/
 
 
