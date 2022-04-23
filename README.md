@@ -37,5 +37,6 @@ A few important notes:
 * Ships cannot be moved once all of them have been placed.
 * The multiplayer will not work on FSUSecure, has not been tested on other FSU Wifi, look in the terminal for connected messages on player 1's terminal.
 * In order to enter the multiplayer menu you must click the button twice.
+* Unless on the menu screen, press the ESC key to close the game.
 
 
