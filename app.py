@@ -854,8 +854,9 @@ if __name__ == "__main__":
             t1 = threading.Thread(target=startServer, name='t1')
             t1.start()
             print("started")
+            time.sleep(1)
 
-            n = Network(socket.gethostname())
+            n = Network()
 
         else:
             ip_address = ip_address.lstrip()

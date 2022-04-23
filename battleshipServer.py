@@ -69,10 +69,11 @@ for i in server:
     if i[0] + i[1] + i[2] == '127':  # Checks to see whether IP is a loopback address
         continue
     elif i[0]+i[1]+i[2] == '192':
-        continue
+        server = i
     else:
         server = i
         break
+print(server)
 try:
     s.bind((server, port))
 
