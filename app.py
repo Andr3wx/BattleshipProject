@@ -393,6 +393,12 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWi
                         print("You Win!")
                         run = False
 
+                win = "You Hit a Ship!"
+                blockSize = block()
+                img_X = SCREEN_WIDTH * .80
+                font = pygame.font.SysFont('arial', int(blockSize * .4330127))
+                text = font.render(win, True, lightBlue)
+                screen.blit(text, (img_X, SCREEN_HEIGHT * 0.4))
                 positionHit = getRectCoord(pos, grid)
                 hit.set_location(positionHit)
                 hit_miss_group_layered.add(hit)
@@ -403,6 +409,13 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWi
             else:
                 drawGrid()
                 miss = Hit_Miss("miss")
+
+                win = "You Missed :("
+                blockSize = block()
+                img_X = SCREEN_WIDTH * .80
+                font = pygame.font.SysFont('arial', int(blockSize * .4330127))
+                text = font.render(win, True, lightBlue)
+                screen.blit(text, (img_X, SCREEN_HEIGHT * 0.4))
 
                 positionMiss = getRectCoord(pos, grid)
                 miss.set_location(positionMiss)
