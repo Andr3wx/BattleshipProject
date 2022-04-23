@@ -6,7 +6,7 @@ Our team members are Russell Deady, John Ronzo, Andrew Franklin, Randy Toyberman
 Project Design:
 There are several Battleship games written in Python with some using the Pygame library. We will extended the current state of the art for those that use Pygame by introducing a rule change that allows players to move their ships during the game. We will also implement a multiplayer feature with socket programming that allows for a multiplayer experience. There are also many python games that incorporate a multiplayer aspect as well as an AI component that allows users to play alone. Out goal is to combine these two philosophies into a multiplayer battleship game. 
 
-Libraries: Pygame, Socket, Random, Pygame-ai
+Libraries: Pygame, Socket, Random, Pygame-ai, Threading, Time, Requests, _Thread
 
 - Multiplayer: Randy
 - GUI: Russell, Tyler
@@ -20,3 +20,22 @@ We have also began the initial setup of the back-end part of the game that sets 
 
 Status Report 2:
 The new libraries we have added are numpy, OcempGUI, pickle, and \_thread. We haven't changed any goals from the original plan.
+
+
+Instructions on how to play:
+
+In order to play the game, run the file app.py. Once the game is opened and loaded, select whether you want a single player or multiplayer game. If single player, the game will start up on the placing ships screen. If multiplayer, select whether you want to create a game or join a game. In order for two people to play, one player must create the game and the other must join the game. If you click create the game, you will be brought to the placing ships screen, with your IP address displayed on top. The player who is joining your game, must launch app.py on their own, select the multiplayer option, and type in the IP listed on the other screen, and click join game. If not type correctly, the player will be unable to join and the game must be launched again. Once the other player has joined, both players will be on the placing ships screen. 
+    
+In order to place ships, you must click and drag the ship icons on the right side of the game board onto the game board itself. A highlight will appear on the board to show you where you are dropping your ships and if they fit in the space you are dropping them in. Once you unclick the mouse, the ship will be dropped in place. You are allowed to pick up and move your ship after you place it, but once all ships have been placed on the board you cannot move any ship. Ships can only be placed horizontally.
+
+In single player: Once you have placed all your ships, the game will start. The player will always have the first turn, and you must click a square on the game board to take a shot at the computer's ships. Once you click a square on the game board, the game will show you if it is a hit by marking an explosion on the spot you clicked, or a miss by marking an X on the spot you clicked. In addition to the graphical representations, there will be text that tells you whether you hit or missed a ship. After you take your shot, the screen will switch and show your own ships, and the game will show you the move the computer made and  whether it is a hit or a miss. The game will continue until someone is crowned a winner, in which text will pop up on the side that all ships have been sunk and the game will close.
+
+In multiplayer: Once all the ships are placed by both players, the screen will change for both players. Player 1 will go first and their screen will become an empty grid where you can click on a square to take a shot. Just like single player, if your shot is a hit, an explosion will show on your screen and the other players screen, and if your shot is a miss then an X will show up on your screen and the other players screen. After player one has taken their turn, the move will show on both screens and the screens will switch. Player 1 will be shown their own game board with all hits/misses present on the board, and player 2 will be show the game board to take a shot. The two players will switch roles until one player wins, and the winning text shows up on the side of the board and the game will close. 
+
+A few important notes:
+* The ships will disappear off the game board as they are sunk
+* Ships cannot be moved once all of them have been placed.
+* The multiplayer will not work on FSUSecure, has not been tested on other FSU Wifi, look in the terminal for connected messages on player 1's terminal.
+* In order to enter the multiplayer menu you must click the button twice.
+
+
