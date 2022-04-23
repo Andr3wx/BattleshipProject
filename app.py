@@ -353,6 +353,12 @@ def moveShipScreen(placing, run, grid, curSprite, shipLoc, network, screenN, oth
         screen.blit(text, (SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.01))
         # pygame.display.update()
 
+    if gameType == False:
+        font = pygame.font.SysFont('Corbel', 35)
+        playerNum = "Player: " + str((int(network.getP()) + 1))
+        text2 = font.render(playerNum, True, lightBlue)
+        screen.blit(text2, (SCREEN_WIDTH * 0.05, SCREEN_HEIGHT * 0.01))
+
     return placing, run, grid, curSprite, shipLoc, screenN, otherPlayerShips
 
 
@@ -367,7 +373,7 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWi
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if checkIfGrid(pos, grid)[0] != -1 and checkIfGrid(pos, grid)[1] != -1:
                 exactSpot = str(getRectCoord(pos, grid)[
-                                0]) + ',' + str(getRectCoord(pos, grid)[1])
+                    0]) + ',' + str(getRectCoord(pos, grid)[1])
                 is_hit = checkIfHitOther(
                     otherPlayerShips, getRectCoord(pos, grid))
                 if gameType == True:
@@ -435,6 +441,12 @@ def takeShotScreen(run, grid, clicked, network, screenN, otherPlayerShips, hitWi
     screen.fill(black)
     grid = drawGrid()
     hit_miss_group_layered.draw(screen)
+
+    if gameType == False:
+        font = pygame.font.SysFont('Corbel', 35)
+        playerNum = "Player: " + str((int(network.getP()) + 1))
+        text2 = font.render(playerNum, True, lightBlue)
+        screen.blit(text2, (SCREEN_WIDTH * 0.05, SCREEN_HEIGHT * 0.01))
     pygame.display.update()
 
     return run, grid, clicked, screenN, hitWinCount
@@ -476,6 +488,12 @@ def otherPlayerTurnScreen(screenN, shipLoc, network, gridLoc, run, gameType):
         miss.set_location(getShot)
         my_hit_miss_group_layered.add(miss)
         my_hit_miss_group_layered.draw(screen)
+
+    if gameType == False:
+        font = pygame.font.SysFont('Corbel', 35)
+        playerNum = "Player: " + str((int(network.getP()) + 1))
+        text2 = font.render(playerNum, True, lightBlue)
+        screen.blit(text2, (SCREEN_WIDTH * 0.05, SCREEN_HEIGHT * 0.01))
 
     pygame.display.update()
     time.sleep(3)
@@ -605,7 +623,7 @@ def mainMenu():
 
     while True:
 
-        #screen.fill((60, 25, 60))
+        # screen.fill((60, 25, 60))
 
         # stores the (x,y) coordinates into
         # the variable as a tuple
@@ -642,7 +660,7 @@ def mainMenu():
 
                 # fills the screen with a color
 
-                #bg = pygame.image.load(r'menuBackground.jpg')
+                # bg = pygame.image.load(r'menuBackground.jpg')
 
         # if mouse is hovered on a button it
         # changes to lighter shade
